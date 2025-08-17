@@ -11,7 +11,7 @@ function SummaryGenerator({ transcript, setSummary, isLoading, setIsLoading }) {
     'Highlight only action items and next steps',
     'Create a brief overview with key decisions',
     'List all participants and their main contributions',
-    'Extract important dates, deadlines, and deliverables'
+    'Extract important dates, deadlines and deliverables'
   ]
 
   const generateSummary = async () => {

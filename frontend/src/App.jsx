@@ -12,10 +12,13 @@ function App() {
   return (
     <div className="main-container">
       <div className="content-wrapper">
+        <header className="header-section">
+          <h1 className="main-title">Meeting Notes Summarizer</h1>
+        </header>
         
         <div style={{ marginBottom: '2rem' }}>
-          <div className="layout-grid">
-            <div>
+          <div className={`layout-container ${summary ? 'summary-active' : 'initial-state'}`}>
+            <div className="left-content">
               <FileUpload 
                 onFileUpload={setTranscript}
                 transcript={transcript}
@@ -32,7 +35,7 @@ function App() {
             </div>
             
             {summary && (
-              <div>
+              <div className="right-content">
                 <SummaryEditor 
                   summary={summary}
                   setSummary={setSummary}
