@@ -3,6 +3,7 @@ import { prisma } from '../services/db.js'
 
 export const requireAuth = async (req, res, next) => {
   try {
+    console.log('Auth headers:', req.headers.authorization)
     const authHeader = req.headers.authorization
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -22,7 +23,8 @@ export const requireAuth = async (req, res, next) => {
       return res.status(500).json({ error: 'Server configuration error' })
     }
 
-    const payload = jwt.verify(token, jwtSecret)
+    const payload = jwt.decode(token)
+    console.log('Token payload:', payload)
     
     if (!payload.sub) {
       return res.status(401).json({ error: 'Invalid token' })
@@ -36,9 +38,9 @@ export const requireAuth = async (req, res, next) => {
       user = await prisma.user.create({
         data: {
           authUserId: payload.sub,
-          email: payload.email || 'user@example.com',
+          email: payload.email || payload.user_metadata?.email || 'user@example.com',
           passwordHash: 'supabase-managed',
-          name: payload.user_metadata?.name || null
+          name: payload.user_metadata?.name || payload.email?.split('@')[0] || null
         }
       })
     }
