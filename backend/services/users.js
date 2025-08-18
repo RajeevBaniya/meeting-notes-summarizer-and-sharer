@@ -1,20 +1,25 @@
-import { prisma } from './db.js'
+import { supabase } from './supabase.js'
 
 export async function ensureUserExists(userId) {
-	const idNum = Number(userId)
-	if (!idNum || Number.isNaN(idNum)) {
+	if (!userId) {
 		throw new Error('Invalid user id')
 	}
-	const existing = await prisma.user.findUnique({ where: { id: idNum } })
-	if (existing) return existing
-	return prisma.user.create({
-		data: {
-			id: idNum,
-			email: `demo+${idNum}@example.com`,
-			passwordHash: 'placeholder',
-			name: 'Demo User'
-		}
-	})
+	
+	const { data, error } = await supabase
+		.from('profiles')
+		.select('*')
+		.eq('id', userId)
+		.single()
+	
+	if (error && error.code !== 'PGRST116') {
+		console.error('Error checking user:', error)
+	}
+	
+	return {
+		id: userId,
+		email: data?.email || null,
+		name: data?.name || null
+	}
 }
 
 

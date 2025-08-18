@@ -1,41 +1,79 @@
-import { prisma } from './db.js'
+import { supabase } from './supabase.js'
 
 export async function saveSummary({ userId, transcript, summary, instruction, title, emailRecipients, isShared }) {
-	return prisma.summary.create({
-		data: {
-			userId,
+	const { data, error } = await supabase
+		.from('summaries')
+		.insert([{
+			user_id: userId,
 			transcript,
 			summary,
 			instruction,
 			title: title || null,
-			emailRecipients: emailRecipients || null,
-			isShared: Boolean(isShared) || false
-		}
-	})
+			email_recipients: emailRecipients || null,
+			is_shared: Boolean(isShared) || false,
+			created_at: new Date(),
+			updated_at: new Date()
+		}])
+		.select()
+	
+	if (error) throw error
+	return data[0]
 }
 
 export async function listSummaries(userId, { skip = 0, take = 20 } = {}) {
-	return prisma.summary.findMany({
-		where: { userId },
-		orderBy: { createdAt: 'desc' },
-		skip,
-		take
-	})
+	const { data, error } = await supabase
+		.from('summaries')
+		.select('*')
+		.eq('user_id', userId)
+		.order('created_at', { ascending: false })
+		.range(skip, skip + take - 1)
+	
+	if (error) throw error
+	return data
 }
 
 export async function getSummaryById(id, userId) {
-	return prisma.summary.findFirst({ where: { id: Number(id), userId } })
+	const { data, error } = await supabase
+		.from('summaries')
+		.select('*')
+		.eq('id', id)
+		.eq('user_id', userId)
+		.single()
+	
+	if (error && error.code !== 'PGRST116') throw error
+	return data
 }
 
 export async function deleteSummary(id, userId) {
-	return prisma.summary.delete({ where: { id: Number(id) } })
+	const { error } = await supabase
+		.from('summaries')
+		.delete()
+		.eq('id', id)
+		.eq('user_id', userId)
+	
+	if (error) throw error
+	return true
 }
 
 export async function updateSummary(id, userId, data) {
-	return prisma.summary.update({
-		where: { id: Number(id) },
-		data
-	})
+
+	const formattedData = Object.entries(data).reduce((acc, [key, value]) => {
+		const snakeKey = key.replace(/([A-Z])/g, '_$1').toLowerCase()
+		acc[snakeKey] = value
+		return acc
+	}, {})
+	
+	formattedData.updated_at = new Date()
+	
+	const { data: updatedData, error } = await supabase
+		.from('summaries')
+		.update(formattedData)
+		.eq('id', id)
+		.eq('user_id', userId)
+		.select()
+	
+	if (error) throw error
+	return updatedData[0]
 }
 
 
