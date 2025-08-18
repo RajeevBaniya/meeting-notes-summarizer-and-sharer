@@ -32,8 +32,20 @@ export const signOut = async () => {
 
 export const getCurrentUser = async () => {
   const { data, error } = await supabase.auth.getSession()
-  return { 
-    user: data?.session?.user || null,
-    error 
+  const token = data?.session?.access_token
+  if (typeof window !== 'undefined') {
+    if (token) localStorage.setItem('sb-token', token)
+    else localStorage.removeItem('sb-token')
   }
+  return { user: data?.session?.user || null, error }
+}
+
+export const startAuthListener = () => {
+  return supabase.auth.onAuthStateChange((_event, session) => {
+    const token = session?.access_token
+    if (typeof window !== 'undefined') {
+      if (token) localStorage.setItem('sb-token', token)
+      else localStorage.removeItem('sb-token')
+    }
+  })
 }

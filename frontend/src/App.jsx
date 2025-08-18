@@ -5,7 +5,7 @@ import SummaryEditor from './components/SummaryEditor'
 import EmailSender from './components/EmailSender'
 import Navbar from './components/Navbar'
 import HistoryView from './components/HistoryView'
-import { getCurrentUser } from './lib/supabase'
+import { getCurrentUser, startAuthListener } from './lib/supabase'
 import LoadingScreen from './components/LoadingScreen'
 import LoginLayout from './components/LoginLayout'
 
@@ -18,6 +18,7 @@ function App() {
   const [showHistory, setShowHistory] = useState(false)
   
   useEffect(() => {
+    const authSub = startAuthListener()
     const checkAuth = async () => {
       try {
         const { user } = await getCurrentUser()
@@ -30,6 +31,9 @@ function App() {
     }
     
     checkAuth()
+    return () => {
+      try { authSub.data?.subscription?.unsubscribe() } catch {}
+    }
   }, [])
 
   const handleAuthSuccess = (session) => {
