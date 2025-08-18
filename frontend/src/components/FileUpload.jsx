@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from '../lib/api'
 import { Button } from './ui/button'
 
 function FileUpload({ onFileUpload, transcript }) {
@@ -17,7 +17,7 @@ function FileUpload({ onFileUpload, transcript }) {
     formData.append('transcript', file)
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/upload`, formData, {
+      const response = await api.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       onFileUpload(response.data.content)
@@ -45,8 +45,8 @@ function FileUpload({ onFileUpload, transcript }) {
       <h2 className="section-title mb-4">Upload Meeting Transcript</h2>
       
       <div 
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-          isDragging ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
+        className={`border-2 border-dashed rounded-xl p-10 text-center transition-colors ${
+          isDragging ? 'border-indigo-400 bg-indigo-50' : 'border-gray-300 bg-white/40'
         }`}
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
@@ -61,11 +61,11 @@ function FileUpload({ onFileUpload, transcript }) {
         ) : (
           <>
             <div className="mb-4">
-              <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+              <svg className="mx-auto h-12 w-12 text-indigo-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <p className="text-lg mb-2">Drop your .txt file here, or</p>
+            <p className="text-lg mb-2 text-gray-700">Drop your .txt file here, or</p>
             <div>
               <input 
                 type="file" 

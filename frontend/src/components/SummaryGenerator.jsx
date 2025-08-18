@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from '../lib/api'
 import { Button } from './ui/button'
 
 function SummaryGenerator({ transcript, setSummary, isLoading, setIsLoading }) {
@@ -29,9 +29,10 @@ function SummaryGenerator({ transcript, setSummary, isLoading, setIsLoading }) {
     setError('')
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/summary/generate`, {
+      const response = await api.post('/api/summary/generate', {
         transcript: transcript,
-        instruction: instruction
+        instruction: instruction,
+        title: new Date().toLocaleString()
       })
       setSummary(response.data.summary)
     } catch (error) {
@@ -49,8 +50,8 @@ function SummaryGenerator({ transcript, setSummary, isLoading, setIsLoading }) {
     <div className="card">
       <h2 className="section-title mb-4">Generate Summary</h2>
       
-      <div className="space-y-4">
-        <div>
+              <div className="space-y-4 flex flex-col items-center">
+        <div className="w-full">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Custom Instruction
           </label>
@@ -58,14 +59,14 @@ function SummaryGenerator({ transcript, setSummary, isLoading, setIsLoading }) {
             value={instruction}
             onChange={(e) => setInstruction(e.target.value)}
             placeholder="e.g., Summarize in bullet points for executives"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/60"
             rows="3"
           />
         </div>
 
-        <div>
+        <div className="w-full">
           <p className="text-sm font-medium text-gray-700 mb-2">Quick options:</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 justify-center">
             {presetInstructions.map((preset, index) => (
               <Button
                 key={index}
@@ -88,8 +89,8 @@ function SummaryGenerator({ transcript, setSummary, isLoading, setIsLoading }) {
         <Button
           onClick={generateSummary}
           disabled={isLoading || !transcript.trim() || !instruction.trim()}
-          className="w-full"
-          size="lg"
+          className="w-auto px-12"
+          size="default"
         >
           {isLoading ? (
             <div className="flex items-center justify-center">

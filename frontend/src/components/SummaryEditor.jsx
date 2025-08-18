@@ -25,7 +25,11 @@ function SummaryEditor({ summary, setSummary }) {
       <div className="flex justify-between items-center mb-4">
         <h2 className="section-title">Generated Summary</h2>
         {!isEditing && (
-          <Button variant="outline" onClick={handleEdit}>
+          <Button 
+            variant="outline" 
+            onClick={handleEdit}
+            className="px-6"
+          >
             Edit
           </Button>
         )}
@@ -36,21 +40,28 @@ function SummaryEditor({ summary, setSummary }) {
           <textarea
             value={editedSummary}
             onChange={(e) => setEditedSummary(e.target.value)}
-            className="flex-1 w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            className="flex-1 w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none min-h-[16rem] max-h-[400px]"
             placeholder="Edit your summary here..."
           />
-          <div className="flex gap-2 flex-shrink-0">
-            <Button onClick={handleSave}>
+          <div className="button-container gap-2">
+            <Button 
+              onClick={handleSave}
+              className="w-auto px-6"
+            >
               Save Changes
             </Button>
-            <Button variant="secondary" onClick={handleCancel}>
+            <Button 
+              variant="secondary" 
+              onClick={handleCancel}
+              className="w-auto px-6"
+            >
               Cancel
             </Button>
           </div>
         </div>
       ) : (
         <div className="flex-1 overflow-hidden">
-          <div className="h-full p-4 bg-gray-50 rounded-md border overflow-y-auto">
+          <div className="min-h-[16rem] max-h-[400px] p-4 bg-gray-50 rounded-md border overflow-y-auto">
             <pre className="whitespace-pre-wrap text-sm text-gray-800 font-sans">
               {summary}
             </pre>

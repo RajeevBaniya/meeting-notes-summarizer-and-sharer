@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from '../lib/api'
 import { Button } from './ui/button'
 
 function EmailSender({ summary }) {
@@ -45,7 +45,7 @@ function EmailSender({ summary }) {
     setSuccess('')
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/email/send`, {
+      await api.post('/api/email/send', {
         recipients: validRecipients,
         summary: summary,
         subject: subject
@@ -62,8 +62,8 @@ function EmailSender({ summary }) {
     <div className="card">
       <h2 className="section-title mb-4">Share Summary via Email</h2>
       
-      <div className="space-y-4">
-        <div>
+      <div className="space-y-4 flex flex-col items-center">
+        <div className="w-full">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Subject
           </label>
@@ -76,7 +76,7 @@ function EmailSender({ summary }) {
           />
         </div>
 
-        <div>
+        <div className="w-full">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Recipients
           </label>
@@ -91,8 +91,9 @@ function EmailSender({ summary }) {
               />
               {recipients.length > 1 && (
                 <Button
-                  variant="destructive"
+                  variant="outline"
                   size="sm"
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
                   onClick={() => removeRecipient(index)}
                 >
                   Remove
@@ -124,8 +125,8 @@ function EmailSender({ summary }) {
         <Button
           onClick={sendEmail}
           disabled={isSending}
-          className="w-full"
-          size="lg"
+          className="w-auto px-12"
+          size="default"
         >
           {isSending ? (
             <div className="flex items-center justify-center">
