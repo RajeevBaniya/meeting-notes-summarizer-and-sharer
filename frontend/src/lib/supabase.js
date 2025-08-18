@@ -10,7 +10,8 @@ export const signUp = async (email, password, name) => {
     email,
     password,
     options: {
-      data: { name }
+      data: { name },
+      emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : undefined
     }
   })
   return { data, error }
