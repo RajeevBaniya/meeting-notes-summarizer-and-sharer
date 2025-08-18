@@ -26,6 +26,4 @@ SUPABASE_URL=https://your-project-ref.supabase.co
 SUPABASE_SERVICE_KEY=your_service_role_key
 ```
 
-You can find these values in your Supabase project settings under API:
-- Project URL
-- Service Role Key (this is different from the anon/public key)
+
