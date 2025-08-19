@@ -1,5 +1,7 @@
 # AI-Powered Meeting Notes Summarizer and Sharer
 
+link - https://ai-powered-meeting-notes-summarizer-app.vercel.app/
+
 A simple app that helps summarize meeting transcripts using AI and share them via email.
 
 ## How it works
