@@ -82,7 +82,11 @@ function HistoryView({ onSelectSummary }) {
       ) : (
         <div className="space-y-4">
           {summaries.map(summary => {
-            const formattedDate = new Date(summary.createdAt).toLocaleString()
+            const createdAt = summary.created_at || summary.createdAt
+            const parsedCreatedAt = createdAt ? new Date(createdAt) : null
+            const formattedDate = parsedCreatedAt && !isNaN(parsedCreatedAt.getTime())
+              ? parsedCreatedAt.toLocaleString()
+              : (summary.title || 'Unknown date')
             const parsedTitleDate = summary.title ? new Date(summary.title) : null
             const titleLooksLikeDate = parsedTitleDate && !isNaN(parsedTitleDate.getTime())
             const useSeparateDate = summary.title && !titleLooksLikeDate
