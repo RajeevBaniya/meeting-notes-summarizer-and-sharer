@@ -5,10 +5,15 @@ dotenv.config();
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const API_KEY = process.env.GROQ_API_KEY;
+const MODEL_NAME = process.env.GROQ_MODEL;
 
 export const generateSummary = async (transcript, instruction) => {
   if (!API_KEY) {
     throw new Error('Groq API key not configured');
+  }
+
+  if (!MODEL_NAME) {
+    throw new Error('Groq model not configured');
   }
 
   const prompt = `
@@ -23,7 +28,7 @@ Please provide a well-structured summary based on the instruction above.
 
   try {
     const response = await axios.post(GROQ_API_URL, {
-      model: 'llama3-8b-8192',
+      model: MODEL_NAME,
       messages: [
         {
           role: 'user',
