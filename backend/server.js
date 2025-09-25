@@ -21,9 +21,11 @@ const wildcardToRegex = (pattern) => {
   return new RegExp(`^${escaped}$`)
 }
 
+const normalizeOriginPattern = (pattern) => (pattern || '').replace(/\/$/, '')
+
 const allowedOriginPatterns = [
-  process.env.FRONTEND_URL || 'http://localhost:5173',
-  ...parseOrigins(process.env.CORS_ORIGINS)
+  normalizeOriginPattern(process.env.FRONTEND_URL) || 'http://localhost:5173',
+  ...parseOrigins(process.env.CORS_ORIGINS).map(normalizeOriginPattern)
 ]
   .filter(Boolean)
   .map(p => ({ pattern: p, regex: wildcardToRegex(p) }))
