@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function LoadingScreen() {
+function LoadingScreen() {
   return (
     <div className="main-container">
       <div className="content-wrapper">
@@ -15,4 +15,5 @@ export default function LoadingScreen() {
   )
 }
 
+export default LoadingScreen
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import AuthForm from './AuthForm'
 
-export default function LoginLayout({ onAuthSuccess }) {
+function LoginLayout({ onAuthSuccess }) {
   return (
     <div className="main-container">
       <div className="login-page">
@@ -126,4 +126,5 @@ export default function LoginLayout({ onAuthSuccess }) {
   )
 }
 
+export default LoginLayout
 

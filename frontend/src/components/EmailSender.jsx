@@ -19,9 +19,7 @@ function EmailSender({ summary }) {
   }
 
   const updateRecipient = (index, value) => {
-    const newRecipients = [...recipients]
-    newRecipients[index] = value
-    setRecipients(newRecipients)
+    setRecipients(recipients.map((r, i) => (i === index ? value : r)))
   }
 
   const sendEmail = async () => {
