@@ -2,10 +2,9 @@
 
 link - https://meeting-notes-summarizer-app.vercel.app/
 
-A simple app that helps summarize meeting transcripts using AI and share them via email.
+It helps to summarize meeting transcripts using AI and share them via email.
 
 ## How it works
-
 1. Upload a text transcript of your meeting
 2. Add custom instructions for the AI
 3. Generate a summary
