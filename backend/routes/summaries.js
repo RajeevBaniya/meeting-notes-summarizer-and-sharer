@@ -41,11 +41,25 @@ router.delete('/:id', requireAuth, async (req, res) => {
 
 router.put('/:id', requireAuth, async (req, res) => {
 	try {
-		const data = {}
-		const allowed = ['title', 'summary', 'instruction', 'isShared', 'emailRecipients']
-		for (const key of allowed) {
-			if (key in req.body) data[key] = req.body[key]
-		}
+		const allowed = [
+			'title',
+			'summary',
+			'instruction',
+			'isShared',
+			'emailRecipients',
+			'meetingTitle',
+			'meetingDate',
+			'meetingType',
+			'participants',
+			'location',
+			'actionItems',
+			'decisions',
+			'deadlines',
+			'extractedParticipants'
+		]
+		const data = Object.fromEntries(
+			allowed.filter(key => key in req.body).map(key => [key, req.body[key]])
+		)
 		const updated = await updateSummary(req.params.id, req.user.id, data)
 		res.json({ success: true, item: updated })
 	} catch (error) {
@@ -55,5 +69,3 @@ router.put('/:id', requireAuth, async (req, res) => {
 })
 
 export default router
-
-
