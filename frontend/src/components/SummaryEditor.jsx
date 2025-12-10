@@ -1,6 +1,93 @@
 import { useState } from 'react'
 import { Button } from './ui/button'
 
+function renderMarkdown(text) {
+	if (!text) return ''
+	
+	const lines = text.split('\n')
+	const result = []
+	let inList = false
+	let inSubList = false
+	
+	lines.forEach((line, index) => {
+		const trimmed = line.trim()
+		
+		if (!trimmed) {
+			if (inList || inSubList) {
+				result.push('</ul>')
+				inList = false
+				inSubList = false
+			}
+			result.push('<br />')
+			return
+		}
+		
+		if (trimmed.startsWith('**') && trimmed.endsWith('**') && !trimmed.includes('*') || trimmed.match(/^\*\*[^*]+\*\*$/)) {
+			if (inList || inSubList) {
+				result.push('</ul>')
+				inList = false
+				inSubList = false
+			}
+			const heading = trimmed.replace(/\*\*/g, '')
+			result.push(`<h3 class="font-semibold text-gray-900 mt-4 mb-2 text-base">${heading}</h3>`)
+			return
+		}
+		
+		if (trimmed.startsWith('* ') && !trimmed.startsWith('**')) {
+			if (!inList) {
+				result.push('<ul class="list-disc list-inside mb-3 ml-4 space-y-1">')
+				inList = true
+			}
+			if (inSubList) {
+				result.push('</ul>')
+				inSubList = false
+			}
+			const content = trimmed.substring(2).trim()
+			const processed = content.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+			result.push(`<li class="mb-1">${processed}</li>`)
+			return
+		}
+		
+		if (trimmed.startsWith('+ ')) {
+			if (!inList) {
+				result.push('<ul class="list-disc list-inside mb-3 ml-4 space-y-1">')
+				inList = true
+			}
+			if (!inSubList) {
+				result.push('<ul class="list-disc list-inside mb-2 ml-6 space-y-1">')
+				inSubList = true
+			}
+			const content = trimmed.substring(2).trim()
+			const processed = content.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+			result.push(`<li class="mb-1">${processed}</li>`)
+			return
+		}
+		
+		if (inList || inSubList) {
+			result.push('</ul>')
+			if (inSubList) {
+				result.push('</ul>')
+				inSubList = false
+			}
+			inList = false
+		}
+		
+		const processed = trimmed
+			.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+			.replace(/\*(.+?)\*/g, '<em>$1</em>')
+		result.push(`<p class="mb-2">${processed}</p>`)
+	})
+	
+	if (inList || inSubList) {
+		result.push('</ul>')
+		if (inSubList) {
+			result.push('</ul>')
+		}
+	}
+	
+	return result.join('')
+}
+
 function SummaryEditor({ summary, setSummary }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedSummary, setEditedSummary] = useState(summary)
@@ -62,9 +149,10 @@ function SummaryEditor({ summary, setSummary }) {
       ) : (
         <div className="flex-1 overflow-hidden">
           <div className="min-h-[16rem] max-h-[400px] p-4 bg-gray-50 rounded-md border overflow-y-auto">
-            <pre className="whitespace-pre-wrap text-sm text-gray-800 font-sans">
-              {summary}
-            </pre>
+            <div
+              className="text-sm text-gray-800 font-sans prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(summary) }}
+            />
           </div>
         </div>
       )}
