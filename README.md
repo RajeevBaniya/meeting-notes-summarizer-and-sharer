@@ -40,5 +40,6 @@ npm run dev
 
 ## Notes
 
-- Only .txt files supported
+- Only .txt files supported for now  
+- In future pdf and  audio upload transcription option will be there
 
