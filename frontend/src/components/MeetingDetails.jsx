@@ -47,6 +47,8 @@ function MeetingDetails({ meetingData, onUpdate }) {
 		}
 	}
 
+	const inputClass = "w-full p-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+
 	return (
 		<div className="card">
 			<h2 className="section-title mb-4">Meeting Details</h2>
@@ -54,7 +56,7 @@ function MeetingDetails({ meetingData, onUpdate }) {
 			<div className="space-y-4">
 				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-1">
+						<label className="block text-sm font-medium text-slate-300 mb-1">
 							Meeting Title
 						</label>
 						<input
@@ -62,21 +64,21 @@ function MeetingDetails({ meetingData, onUpdate }) {
 							value={meetingData.meetingTitle}
 							onChange={(e) => handleChange('meetingTitle', e.target.value)}
 							placeholder="e.g., Weekly Team Sync"
-							className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/60"
+							className={inputClass}
 						/>
 					</div>
 
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-1">
+						<label className="block text-sm font-medium text-slate-300 mb-1">
 							Meeting Type
 						</label>
 						<select
 							value={meetingData.meetingType}
 							onChange={(e) => handleChange('meetingType', e.target.value)}
-							className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/60"
+							className={inputClass}
 						>
 							{MEETING_TYPES.map(type => (
-								<option key={type.value} value={type.value}>
+								<option key={type.value} value={type.value} className="bg-slate-800">
 									{type.label}
 								</option>
 							))}
@@ -86,19 +88,19 @@ function MeetingDetails({ meetingData, onUpdate }) {
 
 				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-1">
+						<label className="block text-sm font-medium text-slate-300 mb-1">
 							Meeting Date & Time
 						</label>
 						<input
 							type="datetime-local"
 							value={meetingData.meetingDate}
 							onChange={(e) => handleChange('meetingDate', e.target.value)}
-							className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/60"
+							className={inputClass}
 						/>
 					</div>
 
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-1">
+						<label className="block text-sm font-medium text-slate-300 mb-1">
 							Location / Meeting Link
 						</label>
 						<input
@@ -106,13 +108,13 @@ function MeetingDetails({ meetingData, onUpdate }) {
 							value={meetingData.location}
 							onChange={(e) => handleChange('location', e.target.value)}
 							placeholder="e.g., Conference Room A or Zoom link"
-							className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/60"
+							className={inputClass}
 						/>
 					</div>
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">
+					<label className="block text-sm font-medium text-slate-300 mb-1">
 						Participants
 					</label>
 					<div className="flex gap-2">
@@ -122,7 +124,7 @@ function MeetingDetails({ meetingData, onUpdate }) {
 							onChange={(e) => setParticipantInput(e.target.value)}
 							onKeyDown={handleKeyDown}
 							placeholder="Add participant name"
-							className="flex-1 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/60"
+							className={`flex-1 ${inputClass}`}
 						/>
 						<Button
 							type="button"
@@ -139,13 +141,13 @@ function MeetingDetails({ meetingData, onUpdate }) {
 							{meetingData.participants.map((name, index) => (
 								<span
 									key={index}
-									className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm"
+									className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-sm"
 								>
 									{name}
 									<button
 										type="button"
 										onClick={() => removeParticipant(name)}
-										className="ml-1 text-indigo-400 hover:text-indigo-600 focus:outline-none"
+										className="ml-1 text-emerald-400 hover:text-emerald-200 focus:outline-none"
 									>
 										<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -162,4 +164,3 @@ function MeetingDetails({ meetingData, onUpdate }) {
 }
 
 export default MeetingDetails
-

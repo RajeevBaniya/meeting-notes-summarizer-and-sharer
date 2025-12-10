@@ -1,130 +1,100 @@
-import React from 'react'
 import AuthForm from './AuthForm'
 
 function LoginLayout({ onAuthSuccess }) {
-  return (
-    <div className="main-container">
-      <div className="login-page">
-        <div className="login-left-decorations">
-          <div className="relative h-full w-full">
-            <div className="floating-card card-1" style={{ '--rotation': '3deg' }}>
-              <div className="flex items-center mb-2 xl:mb-3">
-                <div className="w-3 xl:w-4 h-3 xl:h-4 bg-green-400 rounded-full mr-2 xl:mr-3"></div>
-                <span className="text-white text-sm xl:text-base font-semibold">Meeting Summary</span>
-              </div>
-              <div className="space-y-1 xl:space-y-2">
-                <div className="w-full h-2 xl:h-3 bg-white/25 rounded"></div>
-                <div className="w-5/6 h-2 xl:h-3 bg-white/25 rounded"></div>
-                <div className="w-3/4 h-2 xl:h-3 bg-white/25 rounded"></div>
-                <div className="w-1/2 h-2 xl:h-3 bg-white/25 rounded"></div>
-              </div>
-            </div>
-
-            <div className="floating-card card-2" style={{ '--rotation': '-2deg' }}>
-              <div className="flex items-center mb-2 xl:mb-3">
-                <div className="w-3 xl:w-4 h-3 xl:h-4 bg-blue-400 rounded-full mr-2 xl:mr-3"></div>
-                <span className="text-white text-sm xl:text-base font-semibold">Action Items</span>
-              </div>
-              <div className="space-y-1 xl:space-y-2">
-                <div className="w-full h-2 xl:h-3 bg-white/25 rounded"></div>
-                <div className="w-4/5 h-2 xl:h-3 bg-white/25 rounded"></div>
-                <div className="w-2/3 h-2 xl:h-3 bg-white/25 rounded"></div>
-              </div>
-            </div>
-
-            <div className="floating-card card-3" style={{ '--rotation': '1deg' }}>
-              <div className="flex items-center mb-2 xl:mb-3">
-                <div className="w-3 xl:w-4 h-3 xl:h-4 bg-purple-400 rounded-full mr-2 xl:mr-3"></div>
-                <span className="text-white text-sm xl:text-base font-semibold">Key Decisions</span>
-              </div>
-              <div className="space-y-1 xl:space-y-2">
-                <div className="w-full h-2 xl:h-3 bg-white/25 rounded"></div>
-                <div className="w-5/6 h-2 xl:h-3 bg-white/25 rounded"></div>
-                <div className="w-3/4 h-2 xl:h-3 bg-white/25 rounded"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="login-right-decorations">
-          <div className="relative h-full w-full">
-            <div className="feature-card feature-1">
-              <div className="flex items-center mb-3 xl:mb-4">
-                <svg className="w-6 xl:w-8 h-6 xl:h-8 text-green-400 mr-2 xl:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span className="text-white font-semibold text-base xl:text-lg">AI-Powered</span>
-              </div>
-              <p className="text-gray-300 text-sm xl:text-base leading-relaxed">Advanced AI technology extracts key insights from your meetings</p>
-            </div>
-
-            <div className="feature-card feature-2">
-              <div className="flex items-center mb-3 xl:mb-4">
-                <svg className="w-6 xl:w-8 h-6 xl:h-8 text-blue-400 mr-2 xl:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                <span className="text-white font-semibold text-base xl:text-lg">Secure & Private</span>
-              </div>
-              <p className="text-gray-300 text-sm xl:text-base leading-relaxed">Your data is encrypted and never shared with third parties</p>
-            </div>
-
-            <div className="feature-card feature-3">
-              <div className="flex items-center mb-3 xl:mb-4">
-                <svg className="w-6 xl:w-8 h-6 xl:h-8 text-purple-400 mr-2 xl:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="text-white font-semibold text-base xl:text-lg">Time-Saving</span>
-              </div>
-              <p className="text-gray-300 text-sm xl:text-base leading-relaxed">Save hours of manual work with automated summaries</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mobile-features">
-          <div className="mobile-feature-list">
-            <div className="mobile-feature-item">
-              <svg className="mobile-feature-icon text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <span className="mobile-feature-text">AI-Powered</span>
-            </div>
-            <div className="mobile-feature-item">
-              <svg className="mobile-feature-icon text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <span className="mobile-feature-text">Secure</span>
-            </div>
-            <div className="mobile-feature-item">
-              <svg className="mobile-feature-icon text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1" />
-              </svg>
-              <span className="mobile-feature-text">Fast</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="login-center">
-          <div className="login-brand">
-            <div className="login-icon">
-              <svg className="w-6 sm:w-8 h-6 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <h1 className="login-title">SummarEase</h1>
-            <p className="login-subtitle">Transform your meeting transcripts into clear, actionable summaries</p>
-          </div>
-          <AuthForm onAuthSuccess={onAuthSuccess} />
-        </div>
-
-        <div className="background-shapes">
-          <div className="bg-shape-1"></div>
-          <div className="bg-shape-2"></div>
-          <div className="bg-shape-3"></div>
-        </div>
-      </div>
-    </div>
-  )
+	return (
+		<div className="login-wrapper">
+			<div className="login-container">
+				<div className="login-hero">
+					<div className="hero-content">
+						<div className="hero-badge">
+							<span>Meeting Notes</span>
+						</div>
+						<h1 className="hero-title">
+							Stop writing.<br />
+							<span className="hero-accent">Start summarizing.</span>
+						</h1>
+						<p className="hero-description">
+							Upload your meeting transcript, get structured insights in seconds. 
+							Action items, decisions, and key points — extracted automatically.
+						</p>
+						
+						<div className="hero-features">
+							<div className="hero-feature">
+								<div className="feature-icon feature-icon-1">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+										<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+									</svg>
+								</div>
+								<div>
+									<h3>Action Items</h3>
+									<p>Auto-extract tasks with assignees</p>
+								</div>
+							</div>
+							<div className="hero-feature">
+								<div className="feature-icon feature-icon-2">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+										<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+									</svg>
+								</div>
+								<div>
+									<h3>Key Decisions</h3>
+									<p>Never miss what was decided</p>
+								</div>
+							</div>
+							<div className="hero-feature">
+								<div className="feature-icon feature-icon-3">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+										<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+									</svg>
+								</div>
+								<div>
+									<h3>Deadlines</h3>
+									<p>Track dates and deliverables</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div className="hero-visual">
+						<div className="visual-card">
+							<div className="visual-header">
+								<div className="visual-dots">
+									<span></span><span></span><span></span>
+								</div>
+								<span className="visual-title">meeting-summary.txt</span>
+							</div>
+							<div className="visual-content">
+								<div className="visual-line visual-line-heading">Team Standup - Jan 15</div>
+								<div className="visual-line"></div>
+								<div className="visual-line visual-line-short"></div>
+								<div className="visual-divider"></div>
+								<div className="visual-line visual-line-accent">Action Items (3)</div>
+								<div className="visual-line visual-line-indent"></div>
+								<div className="visual-line visual-line-indent visual-line-short"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div className="login-form-section">
+					<div className="form-wrapper">
+						<div className="form-brand">
+							<div className="brand-icon">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+									<path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+								</svg>
+							</div>
+							<span className="brand-name">SummarEase</span>
+						</div>
+						<AuthForm onAuthSuccess={onAuthSuccess} />
+						<p className="form-footer">
+							Free to use • No credit card required
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	)
 }
 
 export default LoginLayout
-

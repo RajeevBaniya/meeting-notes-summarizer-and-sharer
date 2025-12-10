@@ -6,21 +6,21 @@ function CollapsibleSection({ title, icon, count, children, defaultOpen = true }
 	if (count === 0) return null
 
 	return (
-		<div className="border border-gray-200 rounded-lg overflow-hidden">
+		<div className="border border-slate-700/50 rounded-lg overflow-hidden">
 			<button
 				type="button"
 				onClick={() => setIsOpen(!isOpen)}
-				className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
+				className="w-full flex items-center justify-between p-3 bg-slate-800/40 hover:bg-slate-800/60 transition-colors"
 			>
 				<div className="flex items-center gap-2">
 					<span className="text-lg">{icon}</span>
-					<span className="font-medium text-gray-800">{title}</span>
-					<span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">
+					<span className="font-medium text-slate-200">{title}</span>
+					<span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">
 						{count}
 					</span>
 				</div>
 				<svg
-					className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+					className={`w-5 h-5 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -28,7 +28,7 @@ function CollapsibleSection({ title, icon, count, children, defaultOpen = true }
 					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
 				</svg>
 			</button>
-			{isOpen && <div className="p-3 bg-white">{children}</div>}
+			{isOpen && <div className="p-3 bg-slate-800/20">{children}</div>}
 		</div>
 	)
 }
@@ -38,11 +38,11 @@ function ActionItemsList({ items }) {
 		<ul className="space-y-2">
 			{items.map((item, index) => (
 				<li key={index} className="flex items-start gap-2">
-					<span className="mt-1 w-4 h-4 rounded border border-gray-300 flex-shrink-0" />
+					<span className="mt-1 w-4 h-4 rounded border border-slate-500 flex-shrink-0" />
 					<div className="flex-1">
-						<p className="text-gray-800">{item.task}</p>
+						<p className="text-slate-200">{item.task}</p>
 						{(item.assignee || item.dueDate) && (
-							<div className="flex gap-3 mt-1 text-sm text-gray-500">
+							<div className="flex gap-3 mt-1 text-sm text-slate-400">
 								{item.assignee && (
 									<span className="flex items-center gap-1">
 										<svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,11 +73,11 @@ function DecisionsList({ items }) {
 		<ul className="space-y-2">
 			{items.map((item, index) => (
 				<li key={index} className="flex items-start gap-2">
-					<span className="mt-1 text-green-500 flex-shrink-0">✓</span>
+					<span className="mt-1 text-emerald-400 flex-shrink-0">✓</span>
 					<div>
-						<p className="text-gray-800">{item.decision}</p>
+						<p className="text-slate-200">{item.decision}</p>
 						{item.context && (
-							<p className="text-sm text-gray-500 mt-1">{item.context}</p>
+							<p className="text-sm text-slate-400 mt-1">{item.context}</p>
 						)}
 					</div>
 				</li>
@@ -91,11 +91,11 @@ function DeadlinesList({ items }) {
 		<ul className="space-y-2">
 			{items.map((item, index) => (
 				<li key={index} className="flex items-start gap-2">
-					<span className="mt-1 text-orange-500 flex-shrink-0">⏰</span>
+					<span className="mt-1 text-orange-400 flex-shrink-0">⏰</span>
 					<div>
-						<p className="text-gray-800">{item.item}</p>
-						<div className="flex gap-3 mt-1 text-sm text-gray-500">
-							<span className="flex items-center gap-1 text-orange-600 font-medium">
+						<p className="text-slate-200">{item.item}</p>
+						<div className="flex gap-3 mt-1 text-sm text-slate-400">
+							<span className="flex items-center gap-1 text-orange-400 font-medium">
 								<svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
 								</svg>
@@ -118,17 +118,19 @@ function DeadlinesList({ items }) {
 }
 
 function ParticipantsList({ items, manualParticipants = [] }) {
+	const manualLower = manualParticipants.map(p => p.toLowerCase())
+
 	return (
 		<div className="flex flex-wrap gap-2">
 			{items.map((name, index) => {
-				const isManual = manualParticipants.includes(name)
+				const isManual = manualLower.includes(name.toLowerCase())
 				return (
 					<span
 						key={index}
 						className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm ${
 							isManual
-								? 'bg-indigo-100 text-indigo-700 font-medium'
-								: 'bg-gray-100 text-gray-700'
+								? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium'
+								: 'bg-slate-700/50 text-slate-300 border border-slate-600'
 						}`}
 					>
 						<svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,7 +164,13 @@ function isValidParticipantName(name) {
 function StructuredSummary({ structured, manualParticipants = [] }) {
 	const { actionItems = [], decisions = [], deadlines = [], participants: extractedParticipants = [] } = structured || {}
 
-	const validExtracted = extractedParticipants.filter(p => isValidParticipantName(p) && !manualParticipants.includes(p))
+	const manualLower = manualParticipants.map(p => p.toLowerCase())
+
+	const validExtracted = extractedParticipants.filter(p => {
+		if (!isValidParticipantName(p)) return false
+		const pLower = p.toLowerCase()
+		return !manualLower.includes(pLower)
+	})
 
 	const mergedParticipants = [
 		...manualParticipants,
@@ -219,4 +227,3 @@ function StructuredSummary({ structured, manualParticipants = [] }) {
 }
 
 export default StructuredSummary
-

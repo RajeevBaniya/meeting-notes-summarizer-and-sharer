@@ -71,20 +71,20 @@ function SummaryGenerator({
 
 			<div className="space-y-4 flex flex-col items-center">
 				<div className="w-full">
-					<label className="block text-sm font-medium text-gray-700 mb-2">
+					<label className="block text-sm font-medium text-slate-300 mb-2">
 						Custom Instruction
 					</label>
 					<textarea
 						value={instruction}
 						onChange={(e) => setInstruction(e.target.value)}
 						placeholder="e.g., Summarize in bullet points for executives"
-						className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/60"
+						className="w-full p-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
 						rows="3"
 					/>
 				</div>
 
 				<div className="w-full">
-					<p className="text-sm font-medium text-gray-700 mb-2">Quick options:</p>
+					<p className="text-sm font-medium text-slate-300 mb-2">Quick options:</p>
 					<div className="flex flex-wrap gap-2 justify-center">
 						{PRESET_INSTRUCTIONS.map((preset, index) => (
 							<Button
@@ -100,8 +100,8 @@ function SummaryGenerator({
 				</div>
 
 				{error && (
-					<div className="p-3 bg-red-50 border border-red-200 rounded-md w-full">
-						<p className="text-red-600 text-sm">{error}</p>
+					<div className="p-3 bg-red-500/15 border border-red-500/30 rounded-lg w-full">
+						<p className="text-red-400 text-sm">{error}</p>
 					</div>
 				)}
 
