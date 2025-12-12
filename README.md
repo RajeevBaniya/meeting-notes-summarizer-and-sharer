@@ -1,4 +1,4 @@
-# AI-Powered Meeting Notes Summarizer and Sharer
+# Meeting Notes Summarizer and Sharer
 
 link - https://meeting-notes-summarizer-app.vercel.app/
 
