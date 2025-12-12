@@ -18,15 +18,15 @@ router.post('/generate', requireAuth, async (req, res) => {
 		extractStructured
 	} = req.body
 
-	if (!transcript) {
+  if (!transcript) {
 		return res.status(400).json({ error: 'Transcript is required' })
-	}
+  }
 
-	if (!instruction) {
+  if (!instruction) {
 		return res.status(400).json({ error: 'Instruction is required' })
-	}
+  }
 
-	try {
+  try {
 		const shouldExtract = extractStructured !== false
 		const { summary, structured } = await generateMeetingSummary(
 			transcript,
@@ -34,11 +34,11 @@ router.post('/generate', requireAuth, async (req, res) => {
 			shouldExtract
 		)
 
-		const saved = await saveSummary({
-			userId: req.user.id,
-			transcript,
-			summary,
-			instruction,
+    const saved = await saveSummary({
+      userId: req.user.id,
+      transcript,
+      summary,
+      instruction,
 			title,
 			meetingTitle,
 			meetingDate: meetingDate ? new Date(meetingDate) : null,
@@ -51,19 +51,19 @@ router.post('/generate', requireAuth, async (req, res) => {
 			extractedParticipants: structured.participants
 		})
 
-		res.json({
-			success: true,
+    res.json({
+      success: true,
 			summary,
 			structured,
-			savedId: saved.id
+      savedId: saved.id
 		})
-	} catch (error) {
+  } catch (error) {
 		console.error('Summary generation error:', error.message)
-		res.status(500).json({
-			error: 'Failed to generate summary',
-			details: error.message
+    res.status(500).json({ 
+      error: 'Failed to generate summary',
+      details: error.message 
 		})
-	}
+  }
 })
 
 export default router

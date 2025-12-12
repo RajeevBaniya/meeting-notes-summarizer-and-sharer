@@ -89,75 +89,75 @@ function renderMarkdown(text) {
 }
 
 function SummaryEditor({ summary, setSummary }) {
-	const [isEditing, setIsEditing] = useState(false)
-	const [editedSummary, setEditedSummary] = useState(summary)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedSummary, setEditedSummary] = useState(summary)
 
-	const handleSave = () => {
-		setSummary(editedSummary)
-		setIsEditing(false)
-	}
+  const handleSave = () => {
+    setSummary(editedSummary)
+    setIsEditing(false)
+  }
 
-	const handleCancel = () => {
-		setEditedSummary(summary)
-		setIsEditing(false)
-	}
+  const handleCancel = () => {
+    setEditedSummary(summary)
+    setIsEditing(false)
+  }
 
-	const handleEdit = () => {
-		setEditedSummary(summary)
-		setIsEditing(true)
-	}
+  const handleEdit = () => {
+    setEditedSummary(summary)
+    setIsEditing(true)
+  }
 
-	return (
-		<div className="card">
-			<div className="flex justify-between items-center mb-4">
-				<h2 className="section-title">Generated Summary</h2>
-				{!isEditing && (
-					<Button
-						variant="outline"
-						onClick={handleEdit}
-						className="px-6"
-					>
-						Edit
-					</Button>
-				)}
-			</div>
+  return (
+    <div className="card">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="section-title">Generated Summary</h2>
+        {!isEditing && (
+          <Button 
+            variant="outline" 
+            onClick={handleEdit}
+            className="px-6"
+          >
+            Edit
+          </Button>
+        )}
+      </div>
 
-			{isEditing ? (
-				<div className="flex flex-col flex-1 gap-4">
-					<textarea
-						value={editedSummary}
-						onChange={(e) => setEditedSummary(e.target.value)}
+      {isEditing ? (
+        <div className="flex flex-col flex-1 gap-4">
+          <textarea
+            value={editedSummary}
+            onChange={(e) => setEditedSummary(e.target.value)}
 						className="flex-1 w-full p-4 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 resize-none min-h-[16rem] max-h-[400px]"
-						placeholder="Edit your summary here..."
-					/>
-					<div className="button-container gap-2">
-						<Button
-							onClick={handleSave}
-							className="w-auto px-6"
-						>
-							Save Changes
-						</Button>
-						<Button
-							variant="secondary"
-							onClick={handleCancel}
-							className="w-auto px-6"
-						>
-							Cancel
-						</Button>
-					</div>
-				</div>
-			) : (
-				<div className="flex-1 overflow-hidden">
+            placeholder="Edit your summary here..."
+          />
+          <div className="button-container gap-2">
+            <Button 
+              onClick={handleSave}
+              className="w-auto px-6"
+            >
+              Save Changes
+            </Button>
+            <Button 
+              variant="secondary" 
+              onClick={handleCancel}
+              className="w-auto px-6"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 overflow-hidden">
 					<div className="min-h-[16rem] max-h-[400px] p-4 bg-slate-800/40 rounded-lg border border-slate-700/50 overflow-y-auto">
 						<div
 							className="text-sm text-slate-300 font-sans prose prose-sm prose-invert max-w-none"
 							dangerouslySetInnerHTML={{ __html: renderMarkdown(summary) }}
 						/>
-					</div>
-				</div>
-			)}
-		</div>
-	)
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default SummaryEditor

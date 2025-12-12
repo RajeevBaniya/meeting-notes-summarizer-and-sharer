@@ -37,7 +37,7 @@ function Navbar({ user }) {
           <a href="/" className="navbar-brand">
             <span className="brand-badge" aria-hidden="true">S</span>
             <span className="brand-text">
-              Summar<span className="brand-accent">Ease</span>
+              Summer<span className="brand-accent">Ease</span>
             </span>
           </a>
           <div className="relative" ref={menuRef}>
