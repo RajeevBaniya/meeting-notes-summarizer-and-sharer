@@ -92,9 +92,6 @@ function LoginLayout({ onAuthSuccess }) {
 							</a>
 						</div>
 						<AuthForm onAuthSuccess={onAuthSuccess} />
-						<p className="form-footer">
-							Free to use • No credit card required
-						</p>
 					</div>
 				</div>
 			</div>
