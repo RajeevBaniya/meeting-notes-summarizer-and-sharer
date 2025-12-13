@@ -1,4 +1,3 @@
-import fs from 'fs/promises'
 import path from 'path'
 import { createRequire } from 'module'
 import mammoth from 'mammoth'
@@ -51,20 +50,18 @@ function validateFile(file) {
 	return { valid: true, error: null }
 }
 
-async function extractTextFromTxt(filePath) {
-	const content = await fs.readFile(filePath, 'utf8')
+function extractTextFromTxt(buffer) {
+	const content = buffer.toString('utf8')
 	return content.trim()
 }
 
-async function extractTextFromPdf(filePath) {
-	const buffer = await fs.readFile(filePath)
+async function extractTextFromPdf(buffer) {
 	const options = { verbosityLevel: 0 }
 	const data = await pdfParse(buffer, options)
 	return data.text.trim()
 }
 
-async function extractTextFromDocx(filePath) {
-	const buffer = await fs.readFile(filePath)
+async function extractTextFromDocx(buffer) {
 	const result = await mammoth.extractRawText({ buffer })
 	return result.value.trim()
 }
@@ -94,13 +91,17 @@ async function extractText(file) {
 		throw new Error(validation.error)
 	}
 
+	if (!file.buffer) {
+		throw new Error('File buffer is missing')
+	}
+
 	const extractor = getExtractorForFile(file.originalname, file.mimetype)
 
 	if (!extractor) {
 		throw new Error('No extractor available for this file type')
 	}
 
-	const text = await extractor(file.path)
+	const text = await extractor(file.buffer)
 
 	if (!text || text.length === 0) {
 		throw new Error('Could not extract text from file. The file may be empty or corrupted.')
@@ -109,18 +110,9 @@ async function extractText(file) {
 	return text
 }
 
-async function cleanupFile(filePath) {
-	try {
-		await fs.unlink(filePath)
-	} catch {
-		// Ignore cleanup errors
-	}
-}
-
 export {
 	extractText,
 	validateFile,
-	cleanupFile,
 	SUPPORTED_EXTENSIONS,
 	SUPPORTED_MIME_TYPES,
 	MAX_FILE_SIZE

@@ -1,10 +1,8 @@
 import express from 'express'
 import multer from 'multer'
 import path from 'path'
-import fs from 'fs'
 import {
 	extractText,
-	cleanupFile,
 	SUPPORTED_EXTENSIONS,
 	MAX_FILE_SIZE
 } from '../services/fileExtractor.js'
@@ -17,32 +15,7 @@ const ALLOWED_MIME_TYPES = Object.freeze([
 	'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 ])
 
-function ensureUploadDir() {
-	const uploadDir = 'uploads'
-	if (!fs.existsSync(uploadDir)) {
-		fs.mkdirSync(uploadDir, { recursive: true })
-	}
-	return uploadDir
-}
-
-function generateFilename(originalname) {
-	const timestamp = Date.now()
-	const ext = path.extname(originalname)
-	const baseName = path.basename(originalname, ext)
-	const safeName = baseName.replace(/[^a-zA-Z0-9-_]/g, '_')
-	return `${timestamp}-${safeName}${ext}`
-}
-
-const storage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		const uploadDir = ensureUploadDir()
-		cb(null, uploadDir)
-	},
-	filename: (req, file, cb) => {
-		const filename = generateFilename(file.originalname)
-		cb(null, filename)
-	}
-})
+const storage = multer.memoryStorage()
 
 function fileFilter(req, file, cb) {
 	const ext = path.extname(file.originalname).toLowerCase()
@@ -77,13 +50,9 @@ router.post('/', upload.single('transcript'), async (req, res) => {
 		return res.status(400).json({ error: 'No file uploaded' })
 	}
 
-	const filePath = req.file.path
-
 	try {
 		const content = await extractText(req.file)
 		const fileType = getFileType(req.file.originalname)
-
-		await cleanupFile(filePath)
 
 		res.json({
 			message: 'File uploaded successfully',
@@ -93,7 +62,6 @@ router.post('/', upload.single('transcript'), async (req, res) => {
 		})
 	} catch (error) {
 		console.error('File extraction error:', error)
-		await cleanupFile(filePath)
 
 		const statusCode = error.message.includes('Unsupported') ? 400 : 500
 		res.status(statusCode).json({ error: error.message })
