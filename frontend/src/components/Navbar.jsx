@@ -1,41 +1,43 @@
-import { useEffect, useRef, useState } from 'react'
-import { signOut } from '../lib/supabase'
+import { useEffect, useRef, useState } from "react";
+import { signOut } from "../lib/supabase";
 
 function Navbar({ user }) {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const menuRef = useRef(null)
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   const handleSignOut = async () => {
-    await signOut()
-    localStorage.removeItem('sb-token')
-    window.location.reload()
-  }
+    await signOut();
+    localStorage.removeItem("sb-token");
+    window.location.reload();
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setMenuOpen(false)
+        setMenuOpen(false);
       }
-    }
+    };
     const handleKey = (e) => {
-      if (e.key === 'Escape') setMenuOpen(false)
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    document.addEventListener('keydown', handleKey)
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKey);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('keydown', handleKey)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, []);
 
-  const avatarLabel = (user?.email || 'U').charAt(0).toUpperCase()
+  const avatarLabel = (user?.email || "U").charAt(0).toUpperCase();
 
   return (
     <nav className="navbar-main">
       <div className="navbar-wrapper">
         <div className="flex justify-between items-center">
           <a href="/" className="navbar-brand">
-            <span className="brand-badge" aria-hidden="true">S</span>
+            <span className="brand-badge" aria-hidden="true">
+              S
+            </span>
             <span className="brand-text">
               Summer<span className="brand-accent">Ease</span>
             </span>
@@ -58,9 +60,7 @@ function Navbar({ user }) {
                 <div className="dropdown-pointer" />
 
                 <div className="profile-info">
-                  <div className="profile-info-avatar">
-                    {avatarLabel}
-                  </div>
+                  <div className="profile-info-avatar">{avatarLabel}</div>
                   <div className="profile-info-text">
                     <p className="profile-email">{user.email}</p>
                     <p className="profile-status">Signed in</p>
@@ -101,7 +101,7 @@ function Navbar({ user }) {
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

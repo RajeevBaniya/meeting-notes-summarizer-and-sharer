@@ -1,92 +1,94 @@
-import { useState } from 'react'
-import api from '../lib/api'
-import { Button } from './ui/button'
+import { useState } from "react";
+import api from "../lib/api";
+import { Button } from "./ui/button";
 
 const PRESET_INSTRUCTIONS = [
-    'Summarize in bullet points for executives',
-    'Highlight only action items and next steps',
-    'Create a brief overview with key decisions',
-    'List all participants and their main contributions',
-    'Extract important dates, deadlines and deliverables'
-  ]
+  "Summarize in bullet points for executives",
+  "Highlight only action items and next steps",
+  "Create a brief overview with key decisions",
+  "List all participants and their main contributions",
+  "Extract important dates, deadlines and deliverables",
+];
 
 function SummaryGenerator({
-	transcript,
-	setSummary,
-	setStructured,
-	isLoading,
-	setIsLoading,
-	meetingData
+  transcript,
+  setSummary,
+  setStructured,
+  isLoading,
+  setIsLoading,
+  meetingData,
 }) {
-	const [instruction, setInstruction] = useState('')
-	const [error, setError] = useState('')
+  const [instruction, setInstruction] = useState("");
+  const [error, setError] = useState("");
 
   const generateSummary = async () => {
     if (!transcript.trim()) {
-      setError('Please upload a transcript first')
-      return
+      setError("Please upload a transcript first");
+      return;
     }
 
     if (!instruction.trim()) {
-      setError('Please provide an instruction')
-      return
+      setError("Please provide an instruction");
+      return;
     }
 
-    setIsLoading(true)
-    setError('')
+    setIsLoading(true);
+    setError("");
 
     try {
-      const response = await api.post('/api/summary/generate', {
-				transcript,
-				instruction,
-				title: new Date().toLocaleString(),
-				meetingTitle: meetingData.meetingTitle || null,
-				meetingDate: meetingData.meetingDate || null,
-				meetingType: meetingData.meetingType || null,
-				participants: meetingData.participants || [],
-				location: meetingData.location || null,
-				extractStructured: true
-      })
+      const response = await api.post("/api/summary/generate", {
+        transcript,
+        instruction,
+        title: new Date().toLocaleString(),
+        meetingTitle: meetingData.meetingTitle || null,
+        meetingDate: meetingData.meetingDate || null,
+        meetingType: meetingData.meetingType || null,
+        participants: meetingData.participants || [],
+        location: meetingData.location || null,
+        extractStructured: true,
+      });
 
-      setSummary(response.data.summary)
+      setSummary(response.data.summary);
 
-			if (response.data.structured) {
-				setStructured(response.data.structured)
-			}
-		} catch (err) {
-			const message = err.response?.data?.error || err.message
-			setError(`Failed to generate summary: ${message}`)
+      if (response.data.structured) {
+        setStructured(response.data.structured);
+      }
+    } catch (err) {
+      const message = err.response?.data?.error || err.message;
+      setError(`Failed to generate summary: ${message}`);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const selectPreset = (preset) => {
-    setInstruction(preset)
-  }
+    setInstruction(preset);
+  };
 
   return (
     <div className="card">
       <h2 className="section-title mb-4">Generate Summary</h2>
-      
-              <div className="space-y-4 flex flex-col items-center">
+
+      <div className="space-y-4 flex flex-col items-center">
         <div className="w-full">
-					<label className="block text-sm font-medium text-slate-300 mb-2">
+          <label className="block text-sm font-medium text-slate-300 mb-2">
             Custom Instruction
           </label>
           <textarea
             value={instruction}
             onChange={(e) => setInstruction(e.target.value)}
             placeholder="e.g., Summarize in bullet points for executives"
-						className="w-full p-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+            className="w-full p-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
             rows="3"
           />
         </div>
 
         <div className="w-full">
-					<p className="text-sm font-medium text-slate-300 mb-2">Quick options:</p>
+          <p className="text-sm font-medium text-slate-300 mb-2">
+            Quick options:
+          </p>
           <div className="flex flex-wrap gap-2 justify-center">
-						{PRESET_INSTRUCTIONS.map((preset, index) => (
+            {PRESET_INSTRUCTIONS.map((preset, index) => (
               <Button
                 key={index}
                 variant="outline"
@@ -100,8 +102,8 @@ function SummaryGenerator({
         </div>
 
         {error && (
-					<div className="p-3 bg-red-500/15 border border-red-500/30 rounded-lg w-full">
-						<p className="text-red-400 text-sm">{error}</p>
+          <div className="p-3 bg-red-500/15 border border-red-500/30 rounded-lg w-full">
+            <p className="text-red-400 text-sm">{error}</p>
           </div>
         )}
 
@@ -113,16 +115,16 @@ function SummaryGenerator({
         >
           {isLoading ? (
             <div className="flex items-center justify-center">
-							<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
               Generating Summary...
             </div>
           ) : (
-            'Generate Summary'
+            "Generate Summary"
           )}
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
-export default SummaryGenerator
+export default SummaryGenerator;

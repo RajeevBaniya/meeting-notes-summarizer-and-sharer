@@ -1,83 +1,90 @@
-import { useState } from 'react'
-import api from '../lib/api'
-import { Button } from './ui/button'
+import { useState } from "react";
+import api from "../lib/api";
+import { Button } from "./ui/button";
 
 function EmailSender({ summary }) {
-  const [recipients, setRecipients] = useState([''])
-  const [subject, setSubject] = useState('Meeting Summary')
-  const [isSending, setIsSending] = useState(false)
-  const [success, setSuccess] = useState('')
-  const [error, setError] = useState('')
+  const [recipients, setRecipients] = useState([""]);
+  const [subject, setSubject] = useState("Meeting Summary");
+  const [isSending, setIsSending] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   const addRecipient = () => {
-    setRecipients([...recipients, ''])
-  }
+    setRecipients([...recipients, ""]);
+  };
 
   const removeRecipient = (index) => {
-    const newRecipients = recipients.filter((_, i) => i !== index)
-    setRecipients(newRecipients.length > 0 ? newRecipients : [''])
-  }
+    const newRecipients = recipients.filter((_, i) => i !== index);
+    setRecipients(newRecipients.length > 0 ? newRecipients : [""]);
+  };
 
   const updateRecipient = (index, value) => {
-		setRecipients(recipients.map((r, i) => (i === index ? value : r)))
-  }
+    setRecipients(recipients.map((r, i) => (i === index ? value : r)));
+  };
 
   const sendEmail = async () => {
-    const validRecipients = recipients.filter(email => email.trim())
-    
+    const validRecipients = recipients.filter((email) => email.trim());
+
     if (validRecipients.length === 0) {
-      setError('Please add at least one email address')
-      return
+      setError("Please add at least one email address");
+      return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    const invalidEmails = validRecipients.filter(email => !emailRegex.test(email))
-    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const invalidEmails = validRecipients.filter(
+      (email) => !emailRegex.test(email)
+    );
+
     if (invalidEmails.length > 0) {
-      setError(`Invalid email addresses: ${invalidEmails.join(', ')}`)
-      return
+      setError(`Invalid email addresses: ${invalidEmails.join(", ")}`);
+      return;
     }
 
-    setIsSending(true)
-    setError('')
-    setSuccess('')
+    setIsSending(true);
+    setError("");
+    setSuccess("");
 
     try {
-      await api.post('/api/email/send', {
+      await api.post("/api/email/send", {
         recipients: validRecipients,
         summary: summary,
-        subject: subject
-      })
-      setSuccess(`Summary sent successfully to ${validRecipients.length} recipient(s)`)
-		} catch (err) {
-			setError('Failed to send email: ' + (err.response?.data?.error || err.message))
+        subject: subject,
+      });
+      setSuccess(
+        `Summary sent successfully to ${validRecipients.length} recipient(s)`
+      );
+    } catch (err) {
+      setError(
+        "Failed to send email: " + (err.response?.data?.error || err.message)
+      );
     } finally {
-      setIsSending(false)
+      setIsSending(false);
     }
-  }
+  };
 
-	const inputClass = "w-full p-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+  const inputClass =
+    "w-full p-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors";
 
   return (
     <div className="card">
       <h2 className="section-title mb-4">Share Summary via Email</h2>
-      
+
       <div className="space-y-4 flex flex-col items-center">
         <div className="w-full">
-					<label className="block text-sm font-medium text-slate-300 mb-2">
+          <label className="block text-sm font-medium text-slate-300 mb-2">
             Subject
           </label>
           <input
             type="text"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-						className={inputClass}
+            className={inputClass}
             placeholder="Meeting Summary"
           />
         </div>
 
         <div className="w-full">
-					<label className="block text-sm font-medium text-slate-300 mb-2">
+          <label className="block text-sm font-medium text-slate-300 mb-2">
             Recipients
           </label>
           {recipients.map((recipient, index) => (
@@ -87,13 +94,13 @@ function EmailSender({ summary }) {
                 value={recipient}
                 onChange={(e) => updateRecipient(index, e.target.value)}
                 placeholder="Enter email address"
-								className={`flex-1 ${inputClass}`}
+                className={`flex-1 ${inputClass}`}
               />
               {recipients.length > 1 && (
                 <Button
                   variant="outline"
                   size="sm"
-									className="text-red-400 hover:text-red-300 border-red-500/30 hover:bg-red-500/10"
+                  className="text-red-400 hover:text-red-300 border-red-500/30 hover:bg-red-500/10"
                   onClick={() => removeRecipient(index)}
                 >
                   Remove
@@ -105,21 +112,21 @@ function EmailSender({ summary }) {
             variant="ghost"
             size="sm"
             onClick={addRecipient}
-						className="text-slate-400 hover:text-slate-200"
+            className="text-slate-400 hover:text-slate-200"
           >
             + Add another recipient
           </Button>
         </div>
 
         {error && (
-					<div className="w-full p-3 bg-red-500/15 border border-red-500/30 rounded-lg">
-						<p className="text-red-400 text-sm">{error}</p>
+          <div className="w-full p-3 bg-red-500/15 border border-red-500/30 rounded-lg">
+            <p className="text-red-400 text-sm">{error}</p>
           </div>
         )}
 
         {success && (
-					<div className="w-full p-3 bg-emerald-500/15 border border-emerald-500/30 rounded-lg">
-						<p className="text-emerald-400 text-sm">{success}</p>
+          <div className="w-full p-3 bg-emerald-500/15 border border-emerald-500/30 rounded-lg">
+            <p className="text-emerald-400 text-sm">{success}</p>
           </div>
         )}
 
@@ -135,12 +142,12 @@ function EmailSender({ summary }) {
               Sending Email...
             </div>
           ) : (
-            'Send Summary'
+            "Send Summary"
           )}
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
-export default EmailSender
+export default EmailSender;

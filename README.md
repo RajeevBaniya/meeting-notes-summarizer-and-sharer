@@ -1,15 +1,16 @@
-# Meeting Notes Summarizer and Sharer
+# SummerEase - Meeting Notes Summarizer
 
 link - https://meeting-notes-summarizer-app.vercel.app/
 
-It helps to summarize meeting transcripts using AI and share them via email.
+Summarize meeting transcripts using AI and share them via email.
 
 ## How it works
-1. Upload a text transcript of your meeting
-2. Add custom instructions for the AI
-3. Generate a summary
-4. Edit the summary if needed
-5. Share via email with team members
+1. Upload your meeting transcript (.txt, .pdf, or .docx)
+2. Fill in meeting details (title, date, participants)
+3. Add custom instructions for the AI
+4. Generate a summary with extracted action items and decisions
+5. Edit the summary if needed
+6. Share via email with team members
 
 ## Setup
 
@@ -37,8 +38,14 @@ npm run dev
 - AI: Groq API
 - Email: Nodemailer with Gmail
 
+## Supported File Formats
+
+- `.txt` - Plain text files
+- `.pdf` - PDF documents
+- `.docx` - Microsoft Word documents
+
 ## Notes
 
-- Only .txt files supported for now  
-- In future pdf and  audio upload transcription option will be there
+- Maximum file size: 10MB
+- Audio/video transcription coming soon
 
