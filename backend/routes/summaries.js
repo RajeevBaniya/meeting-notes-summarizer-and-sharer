@@ -6,11 +6,31 @@ const router = express.Router()
 
 router.get('/', requireAuth, async (req, res) => {
 	try {
-		const { skip, take } = req.query
-		const items = await listSummaries(req.user.id, {
+		const {
+			skip,
+			take,
+			search,
+			dateFrom,
+			dateTo,
+			meetingType,
+			tags,
+			sortBy,
+			sortOrder
+		} = req.query
+
+		const options = {
 			skip: skip ? Number(skip) : 0,
-			take: take ? Number(take) : 20
-		})
+			take: take ? Number(take) : 20,
+			search: search || '',
+			dateFrom: dateFrom || null,
+			dateTo: dateTo || null,
+			meetingType: meetingType || null,
+			tags: tags ? (Array.isArray(tags) ? tags : [tags]) : [],
+			sortBy: sortBy || 'created_at',
+			sortOrder: sortOrder || 'desc'
+		}
+
+		const items = await listSummaries(req.user.id, options)
 		res.json({ success: true, items })
 	} catch (error) {
 		console.error('List summaries error:', error)
@@ -55,7 +75,8 @@ router.put('/:id', requireAuth, async (req, res) => {
 			'actionItems',
 			'decisions',
 			'deadlines',
-			'extractedParticipants'
+			'extractedParticipants',
+			'tags'
 		]
 		const data = Object.fromEntries(
 			allowed.filter(key => key in req.body).map(key => [key, req.body[key]])

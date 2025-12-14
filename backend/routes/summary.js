@@ -15,6 +15,7 @@ router.post('/generate', requireAuth, async (req, res) => {
 		meetingType,
 		participants,
 		location,
+		tags,
 		extractStructured
 	} = req.body
 
@@ -45,6 +46,7 @@ router.post('/generate', requireAuth, async (req, res) => {
 			meetingType,
 			participants: participants || [],
 			location,
+			tags: tags || [],
 			actionItems: structured.actionItems,
 			decisions: structured.decisions,
 			deadlines: structured.deadlines,
