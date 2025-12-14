@@ -45,6 +45,7 @@ function SummaryGenerator({
         meetingType: meetingData.meetingType || null,
         participants: meetingData.participants || [],
         location: meetingData.location || null,
+        tags: meetingData.tags || [],
         extractStructured: true,
       });
 

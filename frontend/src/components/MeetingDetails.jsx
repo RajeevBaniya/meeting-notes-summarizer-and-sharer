@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
+import TagsEditor from "./TagsEditor";
 
 const MEETING_TYPES = [
   { value: "", label: "Select type..." },
@@ -172,6 +173,20 @@ function MeetingDetails({ meetingData, onUpdate }) {
               ))}
             </div>
           )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-1">
+            Tags
+          </label>
+          <TagsEditor
+            tags={meetingData.tags || []}
+            onChange={(newTags) => handleChange("tags", newTags)}
+            placeholder="Type a tag and press Enter..."
+          />
+          <p className="text-xs text-slate-500 mt-1">
+            Press Enter or comma to add a tag
+          </p>
         </div>
       </div>
     </div>

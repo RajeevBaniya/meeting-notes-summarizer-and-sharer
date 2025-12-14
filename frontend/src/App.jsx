@@ -17,6 +17,7 @@ const getInitialMeetingData = () => ({
   meetingType: "",
   participants: [],
   location: "",
+  tags: [],
 });
 
 function App() {
@@ -71,6 +72,7 @@ function App() {
       meetingType: selectedSummary.meeting_type || "",
       participants: selectedSummary.participants || [],
       location: selectedSummary.location || "",
+      tags: selectedSummary.tags || [],
     });
     setShowHistory(false);
   };
