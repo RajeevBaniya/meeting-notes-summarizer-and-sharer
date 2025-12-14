@@ -52,18 +52,18 @@ function validateFile(file) {
 
 function extractTextFromTxt(buffer) {
 	const content = buffer.toString('utf8')
-	return content.trim()
+		return content.trim()
 }
 
 async function extractTextFromPdf(buffer) {
 	const options = { verbosityLevel: 0 }
 	const data = await pdfParse(buffer, options)
-	return data.text.trim()
+		return data.text.trim()
 }
 
 async function extractTextFromDocx(buffer) {
 	const result = await mammoth.extractRawText({ buffer })
-	return result.value.trim()
+		return result.value.trim()
 }
 
 function getExtractorForFile(filename, mimeType) {
