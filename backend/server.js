@@ -5,6 +5,7 @@ import uploadRoutes from './routes/upload.js';
 import summaryRoutes from './routes/summary.js';
 import emailRoutes from './routes/email.js';
 import summariesRoutes from './routes/summaries.js';
+import exportRoutes from './routes/export.js';
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/summary', summaryRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/summaries', summariesRoutes);
+app.use('/api/export', exportRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Meeting Notes API is running' });

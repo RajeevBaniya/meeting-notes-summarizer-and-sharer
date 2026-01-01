@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
+import ExportButton from "./ExportButton";
 
 function renderMarkdown(text) {
   if (!text) return "";
@@ -101,7 +102,7 @@ function renderMarkdown(text) {
   return result.join("");
 }
 
-function SummaryEditor({ summary, setSummary }) {
+function SummaryEditor({ summary, setSummary, summaryId, meetingTitle }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedSummary, setEditedSummary] = useState(summary);
 
@@ -125,9 +126,17 @@ function SummaryEditor({ summary, setSummary }) {
       <div className="flex justify-between items-center mb-4">
         <h2 className="section-title">Generated Summary</h2>
         {!isEditing && (
-          <Button variant="outline" onClick={handleEdit} className="px-6">
-            Edit
-          </Button>
+          <div className="flex items-center gap-3">
+            {summaryId && (
+              <ExportButton 
+                summaryId={summaryId}
+                fileName={meetingTitle ? `${meetingTitle}.pdf` : undefined}
+              />
+            )}
+            <Button variant="outline" onClick={handleEdit} className="px-6">
+              Edit
+            </Button>
+          </div>
         )}
       </div>
 

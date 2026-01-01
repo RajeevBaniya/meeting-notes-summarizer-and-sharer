@@ -29,7 +29,8 @@ function App() {
   const [authChecked, setAuthChecked] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [meetingData, setMeetingData] = useState(getInitialMeetingData);
-
+  const [currentSummaryId, setCurrentSummaryId] = useState(null);
+  
   useEffect(() => {
     const authSub = startAuthListener();
     const checkAuth = async () => {
@@ -42,12 +43,14 @@ function App() {
         setAuthChecked(true);
       }
     };
-
+    
     checkAuth();
     return () => {
       try {
         authSub.data?.subscription?.unsubscribe();
-      } catch {}
+      } catch (error) {
+        console.error('Error unsubscribing:', error);
+      }
     };
   }, []);
 
@@ -74,6 +77,7 @@ function App() {
       location: selectedSummary.location || "",
       tags: selectedSummary.tags || [],
     });
+    setCurrentSummaryId(selectedSummary.id);
     setShowHistory(false);
   };
 
@@ -82,8 +86,10 @@ function App() {
     setSummary("");
     setStructured(null);
     setMeetingData(getInitialMeetingData());
+    setCurrentSummaryId(null);
     setShowHistory(false);
   };
+
 
   if (!authChecked) return <LoadingScreen />;
 
@@ -95,7 +101,13 @@ function App() {
       <div className="content-wrapper">
         <header className="header-section logged-in-header">
           <button
-            onClick={() => setShowHistory(!showHistory)}
+            onClick={() => {
+              if (showHistory) {
+                handleNewSummary();
+              } else {
+                setShowHistory(true);
+              }
+            }}
             className="primary-button history-toggle-btn"
           >
             <span className="history-toggle-text-desktop">
@@ -106,7 +118,7 @@ function App() {
             </span>
           </button>
         </header>
-
+        
         {showHistory ? (
           <HistoryView onSelectSummary={handleSelectSummary} />
         ) : (
@@ -120,27 +132,33 @@ function App() {
               />
 
               <div className="mt-3 sm:mt-4 lg:mt-6">
-                <FileUpload
-                  onFileUpload={setTranscript}
-                  transcript={transcript}
-                />
+              <FileUpload 
+                onFileUpload={setTranscript}
+                transcript={transcript}
+              />
               </div>
-
+              
               <div className="mt-3 sm:mt-4 lg:mt-6">
-                <SummaryGenerator
+                <SummaryGenerator 
                   transcript={transcript}
                   setSummary={setSummary}
                   setStructured={setStructured}
                   isLoading={isLoading}
                   setIsLoading={setIsLoading}
                   meetingData={meetingData}
+                  setSummaryId={setCurrentSummaryId}
                 />
               </div>
             </div>
-
+            
             {summary && (
               <div className="right-content">
-                <SummaryEditor summary={summary} setSummary={setSummary} />
+                <SummaryEditor 
+                  summary={summary} 
+                  setSummary={setSummary}
+                  summaryId={currentSummaryId}
+                  meetingTitle={meetingData.meetingTitle}
+                />
 
                 {structured && (
                   <div className="mt-3 sm:mt-4 lg:mt-6">
@@ -150,7 +168,7 @@ function App() {
                     />
                   </div>
                 )}
-
+                
                 <div className="mt-3 sm:mt-4 lg:mt-6">
                   <EmailSender summary={summary} />
                 </div>

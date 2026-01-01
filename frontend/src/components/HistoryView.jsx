@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import ConfirmDialog from "./ui/confirm-dialog";
 import FilterPanel, { FilterPanelExpanded } from "./FilterPanel";
 import SortDropdown from "./SortDropdown";
+import ExportButton from "./ExportButton";
 
 const MEETING_TYPE_LABELS = {
   team: "Team Meeting",
@@ -27,11 +28,7 @@ function formatDate(dateString) {
 function MeetingTypeBadge({ type }) {
   if (!type) return null;
   const label = MEETING_TYPE_LABELS[type] || type;
-  return (
-    <span className="meeting-type-badge">
-      {label}
-    </span>
-  );
+  return <span className="meeting-type-badge">{label}</span>;
 }
 
 function ParticipantsBadge({ participants }) {
@@ -64,8 +61,18 @@ function ActionItemsCount({ count }) {
   if (!count || count === 0) return null;
   return (
     <span className="action-indicator">
-      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+      <svg
+        className="w-3 h-3"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+        />
       </svg>
       {count} action{count !== 1 ? "s" : ""}
     </span>
@@ -107,7 +114,7 @@ function HistoryView({ onSelectSummary }) {
   const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
   const fetchSummaries = useCallback(async (params = {}) => {
-    try {
+      try {
       setIsLoading(true);
       setError(null);
 
@@ -142,9 +149,9 @@ function HistoryView({ onSelectSummary }) {
     } catch (err) {
       console.error("Error fetching summaries:", err);
       setError("Failed to load your summary history");
-    } finally {
+      } finally {
       setIsLoading(false);
-    }
+      }
   }, []);
 
   useEffect(() => {
@@ -265,12 +272,22 @@ function HistoryView({ onSelectSummary }) {
           />
         )}
       </div>
-
+      
       {summaries.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <svg
+              className="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
             </svg>
           </div>
           <p className="empty-state-text">
@@ -298,15 +315,25 @@ function HistoryView({ onSelectSummary }) {
                     <div className="flex items-center gap-2.5 flex-wrap">
                       <h3 className="font-semibold text-slate-100 truncate group-hover:text-emerald-300 transition-colors">
                         {displayTitle}
-                      </h3>
+                    </h3>
                       <MeetingTypeBadge type={summary.meeting_type} />
                     </div>
 
                     <div className="flex items-center gap-3 mt-2.5 flex-wrap">
                       {meetingDate && (
                         <span className="inline-flex items-center gap-1.5 text-sm text-slate-400">
-                          <svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          <svg
+                            className="w-3.5 h-3.5 text-slate-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
                           </svg>
                           {meetingDate}
                         </span>
@@ -325,14 +352,14 @@ function HistoryView({ onSelectSummary }) {
                     {createdDate && !meetingDate && (
                       <p className="text-xs text-slate-600 mt-2">
                         Created {createdDate}
-                      </p>
+                    </p>
                     )}
                   </div>
 
                   <div className="flex flex-col gap-2 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      variant="outline"
-                      size="sm"
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
                       onClick={(e) => {
                         e.stopPropagation();
                         handleSelect(summary);
@@ -341,7 +368,14 @@ function HistoryView({ onSelectSummary }) {
                     >
                       Open
                     </Button>
-                    <Button
+                    <div className="flex gap-1">
+                      <ExportButton
+                        summaryId={summary.id}
+                        fileName={summary.meeting_title ? `${summary.meeting_title}.pdf` : undefined}
+                        variant="outline"
+                      />
+                    </div>
+                    <Button 
                       variant="destructive"
                       size="sm"
                       className="w-full text-xs"

@@ -17,6 +17,7 @@ function SummaryGenerator({
   isLoading,
   setIsLoading,
   meetingData,
+  setSummaryId,
 }) {
   const [instruction, setInstruction] = useState("");
   const [error, setError] = useState("");
@@ -54,6 +55,10 @@ function SummaryGenerator({
       if (response.data.structured) {
         setStructured(response.data.structured);
       }
+
+      if (response.data.savedId && setSummaryId) {
+        setSummaryId(response.data.savedId);
+      }
     } catch (err) {
       const message = err.response?.data?.error || err.message;
       setError(`Failed to generate summary: ${message}`);
@@ -69,8 +74,8 @@ function SummaryGenerator({
   return (
     <div className="card">
       <h2 className="section-title mb-4">Generate Summary</h2>
-
-      <div className="space-y-4 flex flex-col items-center">
+      
+              <div className="space-y-4 flex flex-col items-center">
         <div className="w-full">
           <label className="block text-sm font-medium text-slate-300 mb-2">
             Custom Instruction
