@@ -25,8 +25,6 @@ export const sendSummaryEmail = async (recipients, summary, subject = 'Meeting S
 <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; font-family: Arial, sans-serif;">
   <pre style="white-space: pre-wrap; font-family: Arial, sans-serif;">${summary}</pre>
 </div>
-<br>
-<p style="color: #666; font-size: 12px;">This summary was generated automatically.</p>
   `;
 
   const mailOptions = {
