@@ -1082,34 +1082,23 @@ button.danger-button:hover,
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
 }
 
-/* Fix date/time input icons for dark theme */
+/* Date/time input styling for dark theme */
 input[type="date"],
 input[type="datetime-local"],
 input[type="time"] {
   color-scheme: dark !important;
+  -moz-appearance: textfield;
 }
 
+/* Hide native calendar picker icon - using custom icon instead */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
-  background-color: transparent !important;
-  filter: invert(1) brightness(2) !important;
-  cursor: pointer !important;
-  opacity: 0.8 !important;
-  padding: 4px;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator:hover,
-input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover,
-input[type="time"]::-webkit-calendar-picker-indicator:hover {
-  opacity: 1 !important;
-}
-
-/* Firefox date input */
-input[type="date"],
-input[type="datetime-local"],
-input[type="time"] {
-  -moz-appearance: textfield;
+  opacity: 0 !important;
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
 }
 
 /* Select dropdown arrow for dark theme */
@@ -1180,7 +1169,7 @@ select {
 .auth-footer span {
   font-size: 0.875rem;
   color: #94a3b8;
-}
+  }
 
 .auth-switch {
   font-size: 0.875rem;
@@ -1190,8 +1179,8 @@ select {
   border: none;
   cursor: pointer;
   transition: color 0.15s ease;
-}
-
+  }
+  
 .auth-switch:hover {
   color: #34d399;
 }

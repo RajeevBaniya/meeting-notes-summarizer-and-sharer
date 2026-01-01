@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "./ui/button";
 import TagsEditor from "./TagsEditor";
+import { SlCalender } from "react-icons/sl";
 
 const MEETING_TYPES = [
   { value: "", label: "Select type..." },
@@ -17,6 +18,7 @@ const MEETING_TYPES = [
 
 function MeetingDetails({ meetingData, onUpdate }) {
   const [participantInput, setParticipantInput] = useState("");
+  const dateTimeInputRef = useRef(null);
 
   const handleChange = (field, value) => {
     onUpdate({ ...meetingData, [field]: value });
@@ -97,12 +99,28 @@ function MeetingDetails({ meetingData, onUpdate }) {
             <label className="block text-sm font-medium text-slate-300 mb-1">
               Meeting Date & Time
             </label>
-            <input
-              type="datetime-local"
-              value={meetingData.meetingDate}
-              onChange={(e) => handleChange("meetingDate", e.target.value)}
-              className={inputClass}
-            />
+            <div className="relative">
+              <input
+                ref={dateTimeInputRef}
+                type="datetime-local"
+                value={meetingData.meetingDate}
+                onChange={(e) => handleChange("meetingDate", e.target.value)}
+                className={`${inputClass} pr-10`}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  if (dateTimeInputRef.current) {
+                    dateTimeInputRef.current.showPicker?.();
+                    dateTimeInputRef.current.focus();
+                  }
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-white transition-colors cursor-pointer z-10"
+                aria-label="Open calendar"
+              >
+                <SlCalender className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           <div>
