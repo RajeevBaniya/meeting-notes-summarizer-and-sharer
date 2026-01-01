@@ -91,7 +91,7 @@ function FilterPanelExpanded({ filters, onFilterChange }) {
     const tagsValue = e.target.value;
     const tagsArray = tagsValue
       .split(",")
-      .map((tag) => tag.trim())
+      .map((tag) => tag.trim().toLowerCase())
       .filter((tag) => tag.length > 0);
     onFilterChange({ ...filters, tags: tagsArray });
   };

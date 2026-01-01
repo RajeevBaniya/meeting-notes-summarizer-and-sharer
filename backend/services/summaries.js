@@ -77,7 +77,9 @@ export async function listSummaries(userId, options = {}) {
   }
 
   if (dateTo) {
-    query = query.lte("meeting_date", dateTo);
+    const endOfDay = new Date(dateTo);
+    endOfDay.setHours(23, 59, 59, 999);
+    query = query.lte("meeting_date", endOfDay.toISOString());
   }
 
   if (meetingType) {
