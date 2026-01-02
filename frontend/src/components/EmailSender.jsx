@@ -2,7 +2,7 @@ import { useState } from "react";
 import api from "../lib/api";
 import { Button } from "./ui/button";
 
-function EmailSender({ summary }) {
+function EmailSender({ summary, isTrialMode = false }) {
   const [recipients, setRecipients] = useState([""]);
   const [subject, setSubject] = useState("Meeting Summary");
   const [isSending, setIsSending] = useState(false);
@@ -23,6 +23,11 @@ function EmailSender({ summary }) {
   };
 
   const sendEmail = async () => {
+    if (isTrialMode) {
+      setError("Please login or signup to send emails");
+      return;
+    }
+
     const validRecipients = recipients.filter((email) => email.trim());
 
     if (validRecipients.length === 0) {
@@ -65,9 +70,18 @@ function EmailSender({ summary }) {
   const inputClass =
     "w-full p-3 bg-slate-800/50 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors";
 
+  const disabledClass = isTrialMode ? "opacity-50 cursor-not-allowed" : "";
+
   return (
     <div className="card">
       <h2 className="section-title mb-4">Share Summary via Email</h2>
+      {isTrialMode && (
+        <div className="mb-4 p-3 bg-amber-500/15 border border-amber-500/30 rounded-lg">
+          <p className="text-amber-400 text-sm">
+            Please login or signup to send emails
+          </p>
+        </div>
+      )}
 
       <div className="space-y-4 flex flex-col items-center">
         <div className="w-full">
@@ -78,8 +92,9 @@ function EmailSender({ summary }) {
             type="text"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            className={inputClass}
+            className={`${inputClass} ${disabledClass}`}
             placeholder="Meeting Summary"
+            disabled={isTrialMode}
           />
         </div>
 
@@ -94,7 +109,8 @@ function EmailSender({ summary }) {
                 value={recipient}
                 onChange={(e) => updateRecipient(index, e.target.value)}
                 placeholder="Enter email address"
-                className={`flex-1 ${inputClass}`}
+                className={`flex-1 ${inputClass} ${disabledClass}`}
+                disabled={isTrialMode}
               />
               {recipients.length > 1 && (
                 <Button
@@ -102,6 +118,7 @@ function EmailSender({ summary }) {
                   size="sm"
                   className="text-red-400 hover:text-red-300 border-red-500/30 hover:bg-red-500/10"
                   onClick={() => removeRecipient(index)}
+                  disabled={isTrialMode}
                 >
                   Remove
                 </Button>
@@ -113,6 +130,7 @@ function EmailSender({ summary }) {
             size="sm"
             onClick={addRecipient}
             className="text-slate-400 hover:text-slate-200"
+            disabled={isTrialMode}
           >
             + Add another recipient
           </Button>
@@ -132,7 +150,7 @@ function EmailSender({ summary }) {
 
         <Button
           onClick={sendEmail}
-          disabled={isSending}
+          disabled={isSending || isTrialMode}
           className="w-auto px-12"
           size="default"
         >
