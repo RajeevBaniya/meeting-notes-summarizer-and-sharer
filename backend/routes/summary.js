@@ -1,11 +1,11 @@
 import express from 'express'
 import { generateMeetingSummary } from '../services/groq.js'
 import { saveSummary } from '../services/summaries.js'
-import { requireAuth } from '../middleware/auth.js'
+import { optionalAuth, checkTrialLimit } from '../middleware/auth.js'
 
 const router = express.Router()
 
-router.post('/generate', requireAuth, async (req, res) => {
+router.post('/generate', optionalAuth, checkTrialLimit, async (req, res) => {
 	const {
 		transcript,
 		instruction,
@@ -35,29 +35,35 @@ router.post('/generate', requireAuth, async (req, res) => {
 			shouldExtract
 		)
 
-    const saved = await saveSummary({
-      userId: req.user.id,
-      transcript,
-      summary,
-      instruction,
-			title,
-			meetingTitle,
-			meetingDate: meetingDate ? new Date(meetingDate) : null,
-			meetingType,
-			participants: participants || [],
-			location,
-			tags: tags || [],
-			actionItems: structured.actionItems,
-			decisions: structured.decisions,
-			deadlines: structured.deadlines,
-			extractedParticipants: structured.participants
-		})
+    let saved = null
+    if (req.user) {
+      saved = await saveSummary({
+        userId: req.user.id,
+        transcript,
+        summary,
+        instruction,
+				title,
+				meetingTitle,
+				meetingDate: meetingDate ? new Date(meetingDate) : null,
+				meetingType,
+				participants: participants || [],
+				location,
+				tags: tags || [],
+				actionItems: structured.actionItems,
+				decisions: structured.decisions,
+				deadlines: structured.deadlines,
+				extractedParticipants: structured.participants
+			})
+    } else {
+      const { markTrialUsed } = await import('../services/trialTracker.js');
+      markTrialUsed(req);
+    }
 
     res.json({
       success: true,
 			summary,
 			structured,
-      savedId: saved.id
+      savedId: saved?.id || null
 		})
   } catch (error) {
 		console.error('Summary generation error:', error.message)

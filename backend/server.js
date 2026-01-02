@@ -41,6 +41,8 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.set('trust proxy', true);
+
 app.use('/api/upload', uploadRoutes);
 app.use('/api/summary', summaryRoutes);
 app.use('/api/email', emailRoutes);
