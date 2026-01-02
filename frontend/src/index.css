@@ -907,11 +907,31 @@ button.danger-button:hover,
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   padding: 2rem 1.5rem;
   background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
   min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
+}
+
+.login-form-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.login-form-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.login-form-section::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 3px;
+}
+
+.login-form-section::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
 }
 
 @media (min-width: 640px) {
@@ -925,12 +945,23 @@ button.danger-button:hover,
     width: 45%;
     min-height: auto;
     padding: 3rem;
+    justify-content: center;
   }
 }
 
 .form-wrapper {
   width: 100%;
   max-width: 380px;
+  margin: auto 0;
+  padding: 2rem 0;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .form-wrapper {
+    margin: 0;
+    padding: 0;
+  }
 }
 
 .form-brand {
@@ -988,11 +1019,40 @@ button.danger-button:hover,
     0 4px 24px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+.auth-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.auth-card::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 3px;
+}
+
+.auth-card::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
 }
 
 @media (min-width: 640px) {
   .auth-card {
     padding: 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth-card {
+    max-height: calc(100vh - 6rem);
   }
 }
 
@@ -1183,6 +1243,40 @@ select {
   
 .auth-switch:hover {
   color: #34d399;
+}
+
+.auth-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.auth-submit-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+}
+
+.auth-submit-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.auth-form-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* =================================

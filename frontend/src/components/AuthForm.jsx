@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn, signUp } from "../lib/supabase";
 
-function AuthForm({ onAuthSuccess }) {
-  const [isLogin, setIsLogin] = useState(true);
+function AuthForm({ onAuthSuccess, initialMode = 'login' }) {
+  const [isLogin, setIsLogin] = useState(initialMode === 'login');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    setIsLogin(initialMode === 'login');
+  }, [initialMode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,7 +42,7 @@ function AuthForm({ onAuthSuccess }) {
   };
 
   return (
-    <div className="auth-card">
+    <>
       <div className="auth-header">
         <h2 className="auth-title">
           {isLogin ? "Welcome back" : "Create account"}
@@ -128,7 +132,7 @@ function AuthForm({ onAuthSuccess }) {
           {isLogin ? "Sign up" : "Sign in"}
         </button>
       </div>
-    </div>
+    </>
   );
 }
 

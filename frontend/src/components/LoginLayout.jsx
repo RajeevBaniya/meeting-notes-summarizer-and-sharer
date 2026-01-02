@@ -1,6 +1,27 @@
+import { useState, useEffect } from "react";
 import AuthForm from "./AuthForm";
+import { checkTrialUsed } from "../lib/utils";
 
-function LoginLayout({ onAuthSuccess }) {
+function LoginLayout({ onAuthSuccess, onTrialStart }) {
+  const [trialUsed, setTrialUsed] = useState(false);
+  const [showAuthForm, setShowAuthForm] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
+
+  useEffect(() => {
+    setTrialUsed(checkTrialUsed());
+  }, []);
+
+  const handleTryIt = () => {
+    if (onTrialStart) {
+      onTrialStart();
+    }
+  };
+
+  const handleShowAuth = (mode) => {
+    setAuthMode(mode);
+    setShowAuthForm(true);
+  };
+
   return (
     <div className="login-wrapper">
       <div className="login-container">
@@ -118,7 +139,71 @@ function LoginLayout({ onAuthSuccess }) {
                 </span>
               </a>
             </div>
-            <AuthForm onAuthSuccess={onAuthSuccess} />
+            {!trialUsed ? (
+              <div className={`auth-card ${showAuthForm ? 'auth-form-slide-in' : ''}`}>
+                {!showAuthForm ? (
+                  <>
+                    <div className="auth-header">
+                      <h2 className="auth-title">Try SummerEase</h2>
+                      <p className="auth-subtitle">
+                        Generate your first summary without signing up
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleTryIt}
+                      className="auth-submit"
+                      type="button"
+                    >
+                      Try it
+                    </button>
+                    <div className="auth-footer">
+                      <span>Want to save your summaries?</span>
+                      <button
+                        type="button"
+                        onClick={handleShowAuth}
+                        className="auth-switch"
+                      >
+                        Sign up
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <AuthForm onAuthSuccess={onAuthSuccess} initialMode={authMode} />
+                )}
+              </div>
+            ) : (
+              <div className={`auth-card ${showAuthForm ? 'auth-form-slide-in' : ''}`}>
+                {!showAuthForm ? (
+                  <>
+                    <div className="auth-header">
+                      <h2 className="auth-title">Trial Complete</h2>
+                      <p className="auth-subtitle">
+                        Your one-time trial is over. Please login to continue
+                        generating summaries.
+                      </p>
+                    </div>
+                    <div className="auth-actions">
+                      <button
+                        onClick={() => handleShowAuth('login')}
+                        className="auth-submit"
+                        type="button"
+                      >
+                        Sign in
+                      </button>
+                      <button
+                        onClick={() => handleShowAuth('signup')}
+                        className="auth-submit auth-submit-secondary"
+                        type="button"
+                      >
+                        Sign up
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <AuthForm onAuthSuccess={onAuthSuccess} initialMode={authMode} />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
