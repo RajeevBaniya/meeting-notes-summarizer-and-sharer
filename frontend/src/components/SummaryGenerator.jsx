@@ -1,6 +1,7 @@
 import { useState } from "react";
 import api from "../lib/api";
 import { Button } from "./ui/button";
+import { markTrialUsed, checkTrialUsed } from "../lib/utils";
 
 const PRESET_INSTRUCTIONS = [
   "Summarize in bullet points for executives",
@@ -18,6 +19,8 @@ function SummaryGenerator({
   setIsLoading,
   meetingData,
   setSummaryId,
+  isTrialMode = false,
+  onTrialUsed,
 }) {
   const [instruction, setInstruction] = useState("");
   const [error, setError] = useState("");
@@ -30,6 +33,16 @@ function SummaryGenerator({
 
     if (!instruction.trim()) {
       setError("Please provide an instruction");
+      return;
+    }
+
+    if (isTrialMode && checkTrialUsed()) {
+      setError("Your one-time trial is over. Please login to generate more summaries.");
+      if (onTrialUsed) {
+        setTimeout(() => {
+          onTrialUsed();
+        }, 2000);
+      }
       return;
     }
 
@@ -59,9 +72,21 @@ function SummaryGenerator({
       if (response.data.savedId && setSummaryId) {
         setSummaryId(response.data.savedId);
       }
+
+      if (isTrialMode) {
+        markTrialUsed();
+      }
     } catch (err) {
-      const message = err.response?.data?.error || err.message;
-      setError(`Failed to generate summary: ${message}`);
+      const message = err.response?.data?.message || err.response?.data?.error || err.message;
+      setError(message);
+      
+      if (err.response?.status === 403 && isTrialMode) {
+        if (onTrialUsed) {
+          setTimeout(() => {
+            onTrialUsed();
+          }, 2000);
+        }
+      }
     } finally {
       setIsLoading(false);
     }

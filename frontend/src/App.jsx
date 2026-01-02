@@ -10,6 +10,7 @@ import StructuredSummary from "./components/StructuredSummary";
 import { getCurrentUser, startAuthListener } from "./lib/supabase";
 import LoadingScreen from "./components/LoadingScreen";
 import LoginLayout from "./components/LoginLayout";
+import { checkTrialUsed } from "./lib/utils";
 
 const getInitialMeetingData = () => ({
   meetingTitle: "",
@@ -30,6 +31,7 @@ function App() {
   const [showHistory, setShowHistory] = useState(false);
   const [meetingData, setMeetingData] = useState(getInitialMeetingData);
   const [currentSummaryId, setCurrentSummaryId] = useState(null);
+  const [showMainApp, setShowMainApp] = useState(false);
   
   useEffect(() => {
     const authSub = startAuthListener();
@@ -37,6 +39,9 @@ function App() {
       try {
         const { user } = await getCurrentUser();
         setUser(user);
+        if (user) {
+          setShowMainApp(true);
+        }
       } catch (error) {
         console.error("Auth check error:", error);
       } finally {
@@ -54,9 +59,27 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!user && checkTrialUsed() && showMainApp) {
+      setShowMainApp(false);
+    }
+  }, [user, showMainApp]);
+
   const handleAuthSuccess = (session) => {
     setUser(session.user);
+    setShowMainApp(true);
   };
+
+  const handleTrialStart = () => {
+    setShowMainApp(true);
+  };
+
+  const handleTrialUsed = () => {
+    if (!user) {
+      setShowMainApp(false);
+    }
+  };
+
 
   const handleSelectSummary = (selectedSummary) => {
     setTranscript(selectedSummary.transcript);
@@ -82,6 +105,10 @@ function App() {
   };
 
   const handleNewSummary = () => {
+    if (!user && checkTrialUsed()) {
+      setShowMainApp(false);
+      return;
+    }
     setTranscript("");
     setSummary("");
     setStructured(null);
@@ -93,33 +120,45 @@ function App() {
 
   if (!authChecked) return <LoadingScreen />;
 
-  if (!user) return <LoginLayout onAuthSuccess={handleAuthSuccess} />;
+  if (!user && !showMainApp) {
+    return <LoginLayout onAuthSuccess={handleAuthSuccess} onTrialStart={handleTrialStart} />;
+  }
 
   return (
     <div className="main-container logged-in-container">
-      <Navbar user={user} />
+      <Navbar user={user} isTrialMode={!user} />
       <div className="content-wrapper">
         <header className="header-section logged-in-header">
-          <button
-            onClick={() => {
-              if (showHistory) {
-                handleNewSummary();
-              } else {
-                setShowHistory(true);
-              }
-            }}
-            className="primary-button history-toggle-btn"
-          >
-            <span className="history-toggle-text-desktop">
-              {showHistory ? "New Summary" : "View History"}
-            </span>
-            <span className="history-toggle-text-mobile">
-              {showHistory ? "New" : "History"}
-            </span>
-          </button>
+          {user ? (
+            <button
+              onClick={() => {
+                if (showHistory) {
+                  handleNewSummary();
+                } else {
+                  setShowHistory(true);
+                }
+              }}
+              className="primary-button history-toggle-btn"
+            >
+              <span className="history-toggle-text-desktop">
+                {showHistory ? "New Summary" : "View History"}
+              </span>
+              <span className="history-toggle-text-mobile">
+                {showHistory ? "New" : "History"}
+              </span>
+            </button>
+          ) : summary ? (
+            <button
+              onClick={handleNewSummary}
+              className="primary-button history-toggle-btn"
+            >
+              <span className="history-toggle-text-desktop">New Summary</span>
+              <span className="history-toggle-text-mobile">New</span>
+            </button>
+          ) : null}
         </header>
         
-        {showHistory ? (
+        {user && showHistory ? (
           <HistoryView onSelectSummary={handleSelectSummary} />
         ) : (
           <div
@@ -147,6 +186,8 @@ function App() {
                   setIsLoading={setIsLoading}
                   meetingData={meetingData}
                   setSummaryId={setCurrentSummaryId}
+                  isTrialMode={!user}
+                  onTrialUsed={handleTrialUsed}
                 />
               </div>
             </div>
@@ -170,7 +211,7 @@ function App() {
                 )}
                 
                 <div className="mt-3 sm:mt-4 lg:mt-6">
-                  <EmailSender summary={summary} />
+                  <EmailSender summary={summary} isTrialMode={!user} />
                 </div>
               </div>
             )}
