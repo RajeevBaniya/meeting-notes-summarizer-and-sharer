@@ -1,11 +1,11 @@
 import express from 'express'
 import { generateMeetingSummary } from '../services/groq.js'
 import { saveSummary } from '../services/summaries.js'
-import { optionalAuth, checkTrialLimit } from '../middleware/auth.js'
+import { optionalAuth } from '../middleware/auth.js'
 
 const router = express.Router()
 
-router.post('/generate', optionalAuth, checkTrialLimit, async (req, res) => {
+router.post('/generate', optionalAuth, async (req, res) => {
 	const {
 		transcript,
 		instruction,
@@ -25,6 +25,16 @@ router.post('/generate', optionalAuth, checkTrialLimit, async (req, res) => {
 
   if (!instruction) {
 		return res.status(400).json({ error: 'Instruction is required' })
+  }
+
+  if (!req.user) {
+    const { checkTrialUsed } = await import('../services/trialTracker.js');
+    if (checkTrialUsed(req)) {
+      return res.status(403).json({ 
+        error: 'Trial limit reached',
+        message: 'Your one-time trial is over. Please login or signup to continue generating summaries.'
+      });
+    }
   }
 
   try {

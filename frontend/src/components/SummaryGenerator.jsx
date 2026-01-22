@@ -36,16 +36,6 @@ function SummaryGenerator({
       return;
     }
 
-    if (isTrialMode && checkTrialUsed()) {
-      setError("Your one-time trial is over. Please login to generate more summaries.");
-      if (onTrialUsed) {
-        setTimeout(() => {
-          onTrialUsed();
-        }, 2000);
-      }
-      return;
-    }
-
     setIsLoading(true);
     setError("");
 
@@ -73,7 +63,7 @@ function SummaryGenerator({
         setSummaryId(response.data.savedId);
       }
 
-      if (isTrialMode) {
+      if (isTrialMode && !checkTrialUsed()) {
         markTrialUsed();
       }
     } catch (err) {
@@ -81,6 +71,7 @@ function SummaryGenerator({
       setError(message);
       
       if (err.response?.status === 403 && isTrialMode) {
+        markTrialUsed();
         if (onTrialUsed) {
           setTimeout(() => {
             onTrialUsed();
