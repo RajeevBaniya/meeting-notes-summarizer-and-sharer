@@ -36,7 +36,7 @@ npm run dev
 - Frontend: React + Vite
 - Backend: Node.js + Express
 - AI: Groq API
-- Email: Nodemailer with Gmail
+- Email: Gmail API with OAuth2
 
 ## Supported File Formats
 
