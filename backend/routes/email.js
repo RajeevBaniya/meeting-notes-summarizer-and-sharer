@@ -1,9 +1,10 @@
 import express from 'express';
 import { sendSummaryEmail } from '../services/email.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.post('/send', async (req, res) => {
+router.post('/send', requireAuth, async (req, res) => {
   const { recipients, summary, subject } = req.body;
 
   if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
@@ -14,7 +15,6 @@ router.post('/send', async (req, res) => {
     return res.status(400).json({ error: 'Summary is required' });
   }
 
-  // Validate email addresses
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const invalidEmails = recipients.filter(email => !emailRegex.test(email));
   
@@ -26,7 +26,8 @@ router.post('/send', async (req, res) => {
   }
 
   try {
-    await sendSummaryEmail(recipients, summary, subject);
+    const replyToEmail = req.user?.email || null;
+    await sendSummaryEmail(recipients, summary, subject, replyToEmail);
     
     res.json({
       success: true,
