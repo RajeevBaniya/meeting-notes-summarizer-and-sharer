@@ -18,29 +18,67 @@ function ExportButton({ summaryId, fileName, variant = 'outline' }) {
 		try {
 			const response = await api.get(`/api/export/${type}/${summaryId}`, {
 				responseType: 'blob',
+				timeout: 60000,
 			})
 
-			const contentType = response.headers['content-type'] || 
-				(type === 'pdf'
-					? 'application/pdf'
-					: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+			if (response.status < 200 || response.status >= 300) {
+				try {
+					const text = await response.data.text()
+					const errorData = JSON.parse(text)
+					throw new Error(errorData.error || errorData.details || `Server returned status ${response.status}`)
+				} catch {
+					throw new Error(`Server returned status ${response.status}`)
+				}
+			}
+
+			if (!response.data) {
+				throw new Error('No data received from server')
+			}
+
+			const contentType = response.headers['content-type'] || ''
+
+			if (type === 'pdf') {
+				if (!contentType.includes('application/pdf')) {
+					try {
+						const text = await response.data.text()
+						const errorData = JSON.parse(text)
+						throw new Error(errorData.error || errorData.details || 'Failed to generate PDF')
+					} catch (parseError) {
+						if (parseError.message && parseError.message.includes('Failed to generate')) {
+							throw parseError
+						}
+						throw new Error('Server returned non-PDF content')
+					}
+				}
+
+				if (response.data.size === 0) {
+					throw new Error('Received empty PDF file from server')
+				}
+			}
 
 			const blob = new Blob([response.data], {
-				type: contentType,
+				type: contentType || (type === 'pdf'
+					? 'application/pdf'
+					: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'),
 			})
+
+			if (blob.size === 0) {
+				throw new Error('Created blob is empty')
+			}
 
 			const url = window.URL.createObjectURL(blob)
 			const link = document.createElement('a')
 			link.href = url
+			link.style.display = 'none'
 
 			const contentDisposition = response.headers['content-disposition']
 			const fileExtension = type === 'pdf' ? 'pdf' : 'docx'
 			let downloadFileName = fileName || `meeting-notes-${summaryId}.${fileExtension}`
 
 			if (contentDisposition) {
-				const fileNameMatch = contentDisposition.match(/filename="(.+)"/)
-				if (fileNameMatch) {
-					downloadFileName = fileNameMatch[1]
+				const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+				if (fileNameMatch && fileNameMatch[1]) {
+					downloadFileName = decodeURIComponent(fileNameMatch[1].replace(/['"]/g, ''))
 				}
 			} else {
 				if (!downloadFileName.endsWith(`.${fileExtension}`)) {
@@ -51,10 +89,30 @@ function ExportButton({ summaryId, fileName, variant = 'outline' }) {
 			link.download = downloadFileName
 			document.body.appendChild(link)
 			link.click()
-			document.body.removeChild(link)
-			window.URL.revokeObjectURL(url)
+			
+			setTimeout(() => {
+				document.body.removeChild(link)
+				window.URL.revokeObjectURL(url)
+			}, 100)
 		} catch (error) {
-			const message = error.response?.data?.error || error.message
+			let message = error.message || 'Unknown error occurred'
+			
+			if (error.response) {
+				if (error.response.data instanceof Blob) {
+					try {
+						const text = await error.response.data.text()
+						const errorData = JSON.parse(text)
+						message = errorData.error || errorData.details || message
+					} catch {
+						message = `Server returned status ${error.response.status}`
+					}
+				} else if (typeof error.response.data === 'object') {
+					message = error.response.data.error || error.response.data.details || message
+				} else {
+					message = `Server returned status ${error.response.status}`
+				}
+			}
+			
 			alert(`Failed to export ${type.toUpperCase()}: ${message}`)
 		} finally {
 			setIsExporting(false)

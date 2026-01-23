@@ -1,5 +1,6 @@
 import express from 'express'
-import { generatePDF, generateWordDocument } from '../services/exportService.js'
+import { generatePDF } from '../services/export/pdfGenerator.js'
+import { generateWordDocument } from '../services/export/wordGenerator.js'
 import { getSummaryById } from '../services/summaries.js'
 import { requireAuth } from '../middleware/auth.js'
 import { Packer } from 'docx'
@@ -30,14 +31,30 @@ router.get('/pdf/:id', requireAuth, async (req, res) => {
 		}
 
 		const pdfBytes = await generatePDF(summaryData)
+		
+		if (!pdfBytes || !(pdfBytes instanceof Uint8Array) || pdfBytes.length === 0) {
+			return res.status(500).json({
+				error: 'Failed to generate PDF',
+				details: 'Generated PDF is empty or invalid',
+			})
+		}
+
 		const fileName = `${summary.meeting_title || 'meeting-notes'}-${id}.pdf`.replace(
 			/[^a-z0-9.-]/gi,
 			'-'
 		)
 
+		const pdfBuffer = Buffer.from(pdfBytes)
+
 		res.setHeader('Content-Type', 'application/pdf')
-		res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
-		res.send(pdfBytes)
+		res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`)
+		res.setHeader('Content-Length', pdfBuffer.length.toString())
+		res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+		res.setHeader('Pragma', 'no-cache')
+		res.setHeader('Expires', '0')
+		res.setHeader('X-Content-Type-Options', 'nosniff')
+		
+		res.end(pdfBuffer)
 	} catch (error) {
 		console.error('PDF export error:', error)
 		res.status(500).json({
